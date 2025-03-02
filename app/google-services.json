@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "270913783242",
+    "project_id": "nowfood-6bac4",
+    "storage_bucket": "nowfood-6bac4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270913783242:android:90d5d0e99f83da4cb17b33",
+        "android_client_info": {
+          "package_name": "com.ltmb.ltmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB53-EUFu4-rLR-pJ_UFcjB4X6FGWPVzX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
