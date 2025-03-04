@@ -1,5 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+
+    <color name="color_main">#F6A627</color>
+
+    <color name="color_discount">#43C343</color>
+    <color name="color_space">#FBFAFA</color>
+
+    <!-- Màu nền của nút -->
+    <color name="button_default">#FDD3E1</color>  <!-- Màu nền mặc định -->
+    <color name="button_pressed">#D94F7D</color>  <!-- Màu nền khi nhấn -->
+    <color name="button_selected">#FF85A2</color> <!-- Màu nền khi được chọn -->
+    <color name="button_disabled">#BDBDBD</color> <!-- Màu nền khi bị vô hiệu hóa -->
+
+    <!-- Màu cơ bản (Basic Colors) -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="cyan">#00FFFF</color>
+    <color name="magenta">#FF00FF</color>
+    <color name="gray">#808080</color>
+    <color name="dark_gray">#404040</color>
+    <color name="light_gray">#D3D3D3</color>
+    <color name="pink">#F07D8E</color>
+
+    <!-- Màu pastel (Pastel Colors) -->
+    <color name="pastel_red">#FF6961</color>
+    <color name="pastel_orange">#FFB347</color>
+    <color name="pastel_yellow">#FDFD96</color>
+    <color name="pastel_green">#77DD77</color>
+    <color name="pastel_blue">#AEC6CF</color>
+    <color name="pastel_purple">#CBAACB</color>
+    <color name="pastel_pink">#FFB6C1</color>
+
+    <!-- Màu sáng (Bright Colors) -->
+    <color name="bright_red">#FF5733</color>
+    <color name="bright_orange">#FFC300</color>
+    <color name="bright_yellow">#FFFF33</color>
+    <color name="bright_green">#33FF57</color>
+    <color name="bright_blue">#338AFF</color>
+    <color name="bright_purple">#9B59B6</color>
+
+    <!-- Màu tối (Dark Colors) -->
+    <color name="dark_red">#8B0000</color>
+    <color name="dark_orange">#FF8C00</color>
+    <color name="dark_yellow">#B8860B</color>
+    <color name="dark_green">#006400</color>
+    <color name="dark_blue">#00008B</color>
+    <color name="dark_purple">#4B0082</color>
+
+    <!-- Màu nhạt (Soft Colors) -->
+    <color name="soft_pink">#FFC0CB</color>
+    <color name="soft_peach">#FFE5B4</color>
+    <color name="soft_lavender">#E6E6FA</color>
+    <color name="soft_mint">#F5FFFA</color>
+    <color name="soft_sky_blue">#87CEEB</color>
+    <color name="soft_beige">#F5F5DC</color>
+
+    <!-- Màu theo sắc thái xanh lá cây (Green Shades) -->
+    <color name="lime">#00FF00</color>
+    <color name="forest_green">#228B22</color>
+    <color name="olive">#808000</color>
+    <color name="sea_green">#2E8B57</color>
+    <color name="pale_green">#98FB98</color>
+
+    <!-- Màu theo sắc thái xanh dương (Blue Shades) -->
+    <color name="navy_blue">#000080</color>
+    <color name="sky_blue">#87CEEB</color>
+    <color name="steel_blue">#4682B4</color>
+    <color name="light_blue">#ADD8E6</color>
+    <color name="deep_sky_blue">#00BFFF</color>
+
+    <!-- Màu đất (Earth Tones) -->
+    <color name="brown">#A52A2A</color>
+    <color name="tan">#D2B48C</color>
+    <color name="chocolate">#D2691E</color>
+    <color name="gold">#FFD700</color>
+    <color name="khaki">#F0E68C</color>
+
+    <!-- Màu khác (Miscellaneous Colors) -->
+    <color name="silver">#C0C0C0</color>
+    <color name="bronze">#CD7F32</color>
+    <color name="pearl">#EAE0C8</color>
+    <color name="charcoal">#36454F</color>
+    <color name="teal">#008080</color>
+    <color name="indigo">#4B0082</color>
 </resources>

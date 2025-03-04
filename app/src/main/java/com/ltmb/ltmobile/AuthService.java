@@ -1,5 +1,7 @@
 package com.ltmb.ltmobile;
 
+import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -12,6 +14,9 @@ public class AuthService {
     public AuthService() {
         firebaseAuth = FirebaseAuth.getInstance();
     }
+    private boolean isValidEmail(String email) {
+        return email.contains("@") && email.endsWith(".com");
+    }
 
     private boolean isValidPassword(String password) {
         // Mật khẩu phải có ít nhất 8 kí tự, 1 chữ cái in hoa và 1 kí tự đặc biệt
@@ -20,6 +25,10 @@ public class AuthService {
     }
 
     public void registerUser(String email, String password, AuthCallback callback) {
+        if (!isValidEmail(email)) {
+            callback.onComplete(false, "Email không đúng định dạng.");
+            return;
+        }
         if (!isValidPassword(password)) {
             callback.onComplete(false, "Mật khẩu phải có ít nhất 8 kí tự, bao gồm 1 chữ cái in hoa và 1 kí tự đặc biệt.");
             return;
