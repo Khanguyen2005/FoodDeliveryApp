@@ -1,6 +1,6 @@
-package com.ltmb.ltmobile;
+package com.ltmb.ltmobile.services;
 
-import android.widget.Toast;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,7 +18,8 @@ public class AuthService {
         firebaseAuth = FirebaseAuth.getInstance();
     }
     private boolean isValidEmail(String email) {
-        return email.contains("@") && email.endsWith(".com");
+        String emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        return Pattern.compile(emailPattern).matcher(email).matches();
     }
 
     private boolean isValidPassword(String password) {
@@ -42,43 +43,56 @@ public class AuthService {
                     if (task.isSuccessful()) {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
                         if (user != null) {
-                            String uid = user.getUid(); // Lấy UUID của user
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                            // Chỉ lưu những trường có giá trị
-                            Map<String, Object> userData = new HashMap<>();
-                            userData.put("email", email); // Email luôn có
-                            userData.put("createdAt", System.currentTimeMillis()); // Thời gian tạo luôn có
-
-                            if (name != null && !name.isEmpty()) {
-                                userData.put("name", name);
-                            }
-                            if (phoneNumber != null && !phoneNumber.isEmpty()) {
-                                userData.put("phoneNumber", phoneNumber);
-                            }
-                            if (address != null && !address.isEmpty()) {
-                                userData.put("address", address);
-                            }
-                            if (role != null) {
-                                userData.put("role", role);
-                            }
-                            if (idRes != null) {
-                                userData.put("idRes", idRes);
-                            }
-
-                            // Lưu vào Firestore
-                            db.collection("Users").document(uid)
-                                    .set(userData)
-                                    .addOnSuccessListener(aVoid -> {
-                                        callback.onComplete(true, "Đăng ký thành công! UID: " + uid);
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        callback.onComplete(false, "Đăng ký thành công nhưng lưu dữ liệu thất bại: " + e.getMessage());
+                            user.sendEmailVerification()
+                                    .addOnCompleteListener(verifyTask -> {
+                                        if (verifyTask.isSuccessful()) {
+                                            Log.d("AuthService", "Email xác thực đã được gửi.");
+                                        } else {
+                                            Log.e("AuthService", "Lỗi khi gửi email xác thực", verifyTask.getException());
+                                        }
                                     });
+
+                            saveUserToFirestore(user.getUid(), email, name, phoneNumber, address, role, idRes, callback);
                         }
                     } else {
-                        callback.onComplete(false, task.getException().getMessage());
+                        callback.onComplete(false, "Đăng ký thất bại: " + task.getException().getMessage());
+                        Log.e("AuthService", "Lỗi đăng ký: ", task.getException());
                     }
+                });
+    }
+    private void saveUserToFirestore(String uid, String email, String name, String phoneNumber, String address, Integer role, Long idRes, AuthCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> userData = new HashMap<>();
+
+        userData.put("email", email);
+        userData.put("createdAt", System.currentTimeMillis());
+
+        if (name != null && !name.isEmpty()) {
+            userData.put("name", name);
+        }
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            userData.put("phoneNumber", phoneNumber);
+        }
+        if (address != null && !address.isEmpty()) {
+            userData.put("address", address);
+        }
+        if (role != null) {
+            userData.put("role", role);
+        }
+        if (idRes != null) {
+            userData.put("idRes", idRes);
+        }
+
+        // Ghi dữ liệu vào Firestore
+        db.collection("Users").document(uid)
+                .set(userData)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Lưu thông tin user thành công: " + uid);
+                    callback.onComplete(true, "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Lưu thông tin thất bại", e);
+                    callback.onComplete(false, "Lưu dữ liệu thất bại: " + e.getMessage());
                 });
     }
 
@@ -109,8 +123,6 @@ public class AuthService {
         firebaseAuth.signOut();
     }
 
-//    public void registerUser(String email, String password, AuthCallback authCallback) {
-//    }
 
     public interface AuthCallback {
         void onComplete(boolean success, String message);
