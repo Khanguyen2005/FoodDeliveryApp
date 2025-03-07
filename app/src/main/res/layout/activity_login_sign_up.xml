@@ -29,12 +29,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="visible">
+
             <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
-                android:layout_gravity="center"
-                android:src="@drawable/backgroundlogin" />
+                android:layout_gravity="center" />
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="match_parent"
@@ -128,12 +128,12 @@
             android:visibility="gone"
             tools:layout_editor_absoluteY="79dp">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/downloadtwo" />
+<!--            <ImageView-->
+<!--                android:id="@+id/imageView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="250dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                app:srcCompat="@drawable/" />-->
 
             <TextView
                 android:id="@+id/txtNameSU"

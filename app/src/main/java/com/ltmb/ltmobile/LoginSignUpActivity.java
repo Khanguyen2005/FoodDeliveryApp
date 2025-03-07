@@ -1,8 +1,7 @@
 package com.ltmb.ltmobile;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -14,15 +13,13 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class LoginSignUpActivity extends AppCompatActivity {
     private AuthService authService;
-    private EditText editTextEmail, editTextPassword,editTextConfirmPass;
-    private Button btnRegister,btnLogin;
+    private EditText editTextEmail, editTextPassword, editTextConfirmPass;
+    private Button btnRegister, btnLogin;
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,65 +37,76 @@ public class LoginSignUpActivity extends AppCompatActivity {
         authService = new AuthService();
         editTextEmail = findViewById(R.id.editSignUp);
         editTextPassword = findViewById(R.id.passwordSignUp);
+        editTextConfirmPass = findViewById(R.id.confirmPasswordSignUp);
         btnRegister = findViewById(R.id.btnRegister);
         btnLogin = findViewById(R.id.btnLogin);
-        editTextConfirmPass = findViewById(R.id.confirmPasswordSignUp);
 
-        // Thiết lập màu khi chọn
-        int buttonSelectedColor = getResources().getColor(R.color.button_selected); // Màu khi chọn
-        int buttonDefaultColor = getResources().getColor(R.color.button_default);  // Màu mặc định
+        // Khởi tạo ProgressDialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Đang xử lý...");
+        progressDialog.setCancelable(false);
 
-        // Xử lý sự kiện cho nút Sign Up
-        backToSignUpButton.setOnClickListener(v -> {
-            // Hiển thị form Sign Up và ẩn form Login
-            loginForm.setVisibility(View.GONE);
-            signUpForm.setVisibility(View.VISIBLE);
+        // Xử lý sự kiện chuyển giữa form đăng nhập và đăng ký
+        backToSignUpButton.setOnClickListener(v -> switchToSignUp(headerTitle, loginForm, signUpForm));
+        backToLoginButton.setOnClickListener(v -> switchToLogin(headerTitle, loginForm, signUpForm));
 
-            headerTitle.setText("Đăng ký");
-
-
-            // Thêm animation
-            signUpForm.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_right));
-
-        });
-
-        // Xử lý sự kiện cho nút Login
-        backToLoginButton.setOnClickListener(v -> {
-            // Hiển thị form Login và ẩn form Sign Up
-            signUpForm.setVisibility(View.GONE);
-            loginForm.setVisibility(View.VISIBLE);
-
-            headerTitle.setText("Đăng nhập");
-
-
-            // Thêm animation
-            loginForm.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_left));
-
-        });
-
+        // Xử lý đăng ký tài khoản
         btnRegister.setOnClickListener(v -> {
             String email = editTextEmail.getText().toString().trim();
             String password = editTextPassword.getText().toString().trim();
             String confirmPassword = editTextConfirmPass.getText().toString().trim();
-            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+
+            if (!validateInput(email, password, confirmPassword)) {
                 return;
             }
-
-            if (!password.equals(confirmPassword)) {
-                Toast.makeText(this, "Mật khẩu và xác nhận mật khẩu không khớp", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            registerUser(email, password);
+            registerUser(email, password, null, null, null, null, null);
         });
     }
-    private void registerUser(String email, String password) {
-        authService.registerUser(email, password, new AuthService.AuthCallback() {
+
+    // Chuyển sang form đăng ký
+    private void switchToSignUp(TextView headerTitle, LinearLayout loginForm, LinearLayout signUpForm) {
+        loginForm.setVisibility(View.GONE);
+        signUpForm.setVisibility(View.VISIBLE);
+        headerTitle.setText("Đăng ký");
+        signUpForm.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_right));
+    }
+
+    // Chuyển sang form đăng nhập
+    private void switchToLogin(TextView headerTitle, LinearLayout loginForm, LinearLayout signUpForm) {
+        signUpForm.setVisibility(View.GONE);
+        loginForm.setVisibility(View.VISIBLE);
+        headerTitle.setText("Đăng nhập");
+        loginForm.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_left));
+    }
+
+    // Kiểm tra đầu vào
+    private boolean validateInput(String email, String password, String confirmPassword) {
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!password.equals(confirmPassword)) {
+            Toast.makeText(this, "Mật khẩu và xác nhận mật khẩu không khớp", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    // Đăng ký tài khoản
+    private void registerUser(String email, String password, String name, String phoneNumber, String address, Integer role, Long idRes) {
+        progressDialog.show();
+        btnRegister.setEnabled(false); // Vô hiệu hóa nút để tránh spam
+
+        authService.registerUser(email, password, name, phoneNumber, address, role, idRes, new AuthService.AuthCallback() {
             @Override
             public void onComplete(boolean success, String message) {
-                Toast.makeText(LoginSignUpActivity.this, message, Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    btnRegister.setEnabled(true);
+                    Toast.makeText(LoginSignUpActivity.this, message, Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
+
 }
