@@ -44,5 +44,6 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
     implementation("com.google.firebase:firebase-auth:22.1.2")
     implementation(libs.firebase.analytics)//fireBase
+    implementation ("com.google.firebase:firebase-firestore:24.9.1")
 }
 apply(plugin = "com.google.gms.google-services")
