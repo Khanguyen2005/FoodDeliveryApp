@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="10dp"
+        android:background="@color/white"
+        android:clipToOutline="true">
+        <ImageView
+            android:id="@+id/img_res"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_corner"
+            android:clipToOutline="true"
+            android:src="@drawable/lotterialogo"
+            />
+        <TextView
+            android:id="@+id/res_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="JOLLIBEE - Nguyễn Ảnh Thủ"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_toEndOf="@+id/img_res"
+            android:layout_marginTop="10dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginLeft="10dp"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/img_res"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            >
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:srcCompat="@drawable/star_svgrepo_com__1_" />
+            <TextView
+                android:id="@+id/star_res"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" 5.0 "
+                android:textStyle="bold"
+                android:textColor="@color/color_main"
+                android:textSize="18sp"
+                android:layout_marginHorizontal="2dp"
+                />
+            <TextView
+                android:id="@+id/evaluate_Res"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(8 đánh giá)"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:background="#F8F8F8"
+        android:layout_height="1dp"/>
+</androidx.cardview.widget.CardView>

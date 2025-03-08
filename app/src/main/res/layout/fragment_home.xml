@@ -1,0 +1,481 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="Fragment.HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp">
+
+            <!-- Ảnh nền -->
+            <ImageView
+                android:id="@+id/backgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@drawable/backgroundba"
+                android:scaleType="centerCrop"/>
+
+            <!-- Nội dung đè lên ảnh -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18sp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="Your Address"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+                <EditText
+                    android:id="@+id/searchFood"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginHorizontal="15dp"
+                    android:background="@drawable/rounded_corner"
+                    android:hint="Search Food"
+                    android:inputType="text"
+                    android:paddingLeft="10sp" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:paddingTop="10sp"
+            android:scrollbars="none"
+            android:background="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Ở đây -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_corner"
+                    android:backgroundTint="@color/white"
+                    android:padding="10sp"
+                    android:orientation="vertical">
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:id="@+id/layoutCateMain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <!-- Hàng 1 -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="120dp"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:id="@+id/layoutCate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:gravity="center_horizontal"
+                                    android:padding="8dp">
+
+                                    <!-- Hình ảnh -->
+                                    <ImageView
+                                        android:layout_width="80dp"
+                                        android:layout_height="80dp"
+                                        android:src="@drawable/rice"
+                                        android:contentDescription="Image description" />
+
+                                    <!-- Chữ bên dưới -->
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Cơm"
+                                        android:textSize="16sp"
+                                        android:textColor="#000"
+                                        android:gravity="center" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/layoutNoodle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:gravity="center_horizontal"
+                                    android:padding="8dp">
+
+                                    <!-- Hình ảnh -->
+                                    <ImageView
+                                        android:layout_width="80dp"
+                                        android:layout_height="80dp"
+                                        android:src="@drawable/noodle"
+                                        android:contentDescription="Image description" />
+
+                                    <!-- Chữ bên dưới -->
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Bún,mì,phở"
+                                        android:textSize="16sp"
+                                        android:textColor="#000"
+                                        android:gravity="center" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:gravity="center_horizontal"
+                                    android:padding="8dp">
+
+                                    <!-- Hình ảnh -->
+                                    <ImageView
+                                        android:layout_width="80dp"
+                                        android:layout_height="80dp"
+                                        android:src="@drawable/milktea"
+                                        android:contentDescription="Image description" />
+
+                                    <!-- Chữ bên dưới -->
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Trà sữa"
+                                        android:textSize="16sp"
+                                        android:textColor="#000"
+                                        android:gravity="center" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:gravity="center_horizontal"
+                                    android:padding="8dp">
+
+                                    <!-- Hình ảnh -->
+                                    <ImageView
+                                        android:layout_width="80dp"
+                                        android:layout_height="80dp"
+                                        android:src="@drawable/snack"
+                                        android:contentDescription="Image description" />
+
+                                    <!-- Chữ bên dưới -->
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Ăn vặt"
+                                        android:textSize="16sp"
+                                        android:textColor="#000"
+                                        android:gravity="center" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:gravity="center_horizontal"
+                                    android:padding="8dp">
+
+                                    <!-- Hình ảnh -->
+                                    <ImageView
+                                        android:layout_width="80dp"
+                                        android:layout_height="80dp"
+                                        android:src="@drawable/rice"
+                                        android:contentDescription="Image description" />
+
+                                    <!-- Chữ bên dưới -->
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Cơm"
+                                        android:textSize="14sp"
+                                        android:textColor="#000"
+                                        android:gravity="center" />
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <!-- Hàng 2 -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="120dp"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:gravity="center_horizontal"
+                                    android:padding="8dp">
+
+                                    <!-- Hình ảnh -->
+                                    <ImageView
+                                        android:layout_width="80dp"
+                                        android:layout_height="80dp"
+                                        android:src="@drawable/fastfood"
+                                        android:contentDescription="Image description" />
+
+                                    <!-- Chữ bên dưới -->
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:text="Gà rán,.."
+                                        android:textSize="16sp"
+                                        android:textColor="#000"
+                                        android:gravity="center" />
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_corner"
+                    android:backgroundTint="@color/white"
+                    android:padding="12sp"
+                    android:layout_marginTop="10sp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bộ sưu tập"
+                        android:textColor="@color/color_main"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="90dp"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="250dp"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="Image description"
+                                    />
+<!--                                android:src="@drawable/burgerbanner"-->
+
+                                <ImageView
+                                    android:layout_width="250dp"
+                                    android:layout_marginLeft="10sp"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="Image description"
+                                     />
+<!--                                android:src="@drawable/chickenbanner"-->
+
+
+                                <ImageView
+                                    android:layout_width="250dp"
+                                    android:layout_marginLeft="10sp"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="Image description"
+                                     />
+<!--                                android:src="@drawable/pizzabanner"-->
+
+                            </LinearLayout>
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_corner"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginTop="10sp"
+                    android:padding="10sp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Thương hiệu"
+                        android:textColor="@color/color_main"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:id="@+id/layoutRes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="8dp">
+
+                            <LinearLayout
+                                android:id="@+id/layoutJol"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:padding="8dp">
+
+                                <!-- Hình ảnh -->
+                                <ImageView
+                                    android:layout_width="70dp"
+                                    android:layout_height="70dp"
+                                    android:contentDescription="Image description" />
+<!--                                android:src="@drawable/jollibee"-->
+
+                                <!-- Chữ bên cạnh ảnh -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:gravity="center"
+                                    android:text="JOLLIBEE"
+                                    android:textColor="#000"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="20sp"
+                                android:padding="8dp">
+
+                                <!-- Hình ảnh -->
+                                <ImageView
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+
+                                    android:contentDescription="Image description" />
+<!--                                android:src="@drawable/dominopizza"-->
+
+                                <!-- Chữ bên cạnh ảnh -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:gravity="center"
+                                    android:text="Domino's pizza"
+                                    android:textColor="#000"
+                                    android:textStyle="bold"
+
+                                    android:textSize="18sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="20sp"
+                                android:padding="8dp">
+
+                                <!-- Hình ảnh -->
+                                <ImageView
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+
+                                    android:contentDescription="Image description" />
+<!--                                android:src="@drawable/kfc"-->
+
+                                <!-- Chữ bên cạnh ảnh -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:gravity="center"
+                                    android:text="KFC"
+                                    android:textColor="#000"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+                </LinearLayout>
+                <!-- Tới đây -->
+
+                <LinearLayout
+                    android:id="@+id/layoutRes2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="8dp">
+
+                    <!-- Chữ bên cạnh ảnh -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Nhà hàng"
+                        android:textColor="@color/color_main"
+                        android:textStyle="bold"
+                        android:textSize="20sp" />
+
+                    <androidx.core.widget.NestedScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fillViewport="true">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcvRes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"/>
+
+                    </androidx.core.widget.NestedScrollView>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </LinearLayout>
+
+</FrameLayout>
