@@ -72,7 +72,6 @@ public class RestaurantManagement {
                         categoryData.put("name", document.getString("name")); // Lấy tên loại món ăn
                         categoryList.add(categoryData);
                     }
-
                     // Trả kết quả qua callback
                     callback.onSuccess(categoryList);
                 } else {

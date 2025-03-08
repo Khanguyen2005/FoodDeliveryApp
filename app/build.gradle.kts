@@ -33,7 +33,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -41,11 +40,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
     implementation("com.google.firebase:firebase-auth:22.1.2")
-    implementation(libs.firebase.analytics)//fireBase
-    implementation ("com.google.firebase:firebase-firestore:24.9.1")
-    implementation("com.github.bumptech.glide:glide:4.15.1")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+    implementation(libs.firebase.analytics)
+    implementation("com.google.firebase:firebase-firestore:24.9.1")
+
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0") // Cập nhật phiên bản mới nhất
 }
+
 apply(plugin = "com.google.gms.google-services")
