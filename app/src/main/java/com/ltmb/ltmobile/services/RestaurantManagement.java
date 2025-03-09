@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -143,6 +144,52 @@ public class RestaurantManagement {
                 }
             }
         });
+    }
+    public void checkDiscountCode(String restaurantId, String categoryId, String dishId, String discountCode, final DiscountCallback callback) {
+        // Truy vấn danh mục để lấy thông tin giảm giá
+        db.collection("Restaurants")
+                .document(restaurantId)
+                .collection("menu")
+                .document(categoryId)
+                .collection("menu") // Lấy danh sách món ăn trong category
+                .document(dishId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        // Nếu món ăn tồn tại trong category, tiếp tục kiểm tra discount
+                        db.collection("Restaurants")
+                                .document(restaurantId)
+                                .collection("menu")
+                                .document(categoryId)
+                                .get()
+                                .addOnCompleteListener(categoryTask -> {
+                                    if (categoryTask.isSuccessful() && categoryTask.getResult().exists()) {
+                                        DocumentSnapshot categoryDoc = categoryTask.getResult();
+
+                                        // Lấy thông tin giảm giá từ danh mục
+                                        String storedDiscountCode = categoryDoc.getString("discount_code");
+                                        Long discountPercentage = categoryDoc.getLong("discount_percentage");
+
+                                        // Kiểm tra mã giảm giá có hợp lệ không
+                                        if (storedDiscountCode != null && storedDiscountCode.equals(discountCode)) {
+                                            callback.onResult(true, discountPercentage != null ? discountPercentage : 0);
+                                        } else {
+                                            callback.onResult(false, 0L);
+                                        }
+                                    } else {
+                                        callback.onResult(false, 0L); // Không tìm thấy danh mục hoặc lỗi Firestore
+                                    }
+                                });
+                    } else {
+                        // Món ăn không tồn tại trong danh mục => Không hợp lệ
+                        callback.onResult(false, 0L);
+                    }
+                });
+    }
+
+    // Interface callback để trả về kết quả
+    public interface DiscountCallback {
+        void onResult(boolean isValid, long discountPercentage);
     }
 
 }
