@@ -1,6 +1,7 @@
 package com.ltmb.ltmobile.services;
 
 import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -12,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import Adapter.Food;
 
 public class RestaurantManagement {
 
@@ -53,6 +52,9 @@ public class RestaurantManagement {
                                             Map<String, String> categoryData = new HashMap<>();
                                             categoryData.put("id", categoryDoc.getId()); // ID category
                                             categoryData.put("name", categoryDoc.getString("name")); // Tên category
+                                            categoryData.put("discount_code", categoryDoc.getString("discount_code")); //Ma giam
+                                            categoryData.put("discount_description", categoryDoc.getString("discount_description")); // mo ta code
+                                            categoryData.put("discount_percentage", categoryDoc.getString("discount_percentage")); // % giam gia
                                             categoryList.add(categoryData);
                                         }
                                         // Thêm danh sách category vào dữ liệu của nhà hàng
@@ -142,6 +144,5 @@ public class RestaurantManagement {
             }
         });
     }
-
 
 }
