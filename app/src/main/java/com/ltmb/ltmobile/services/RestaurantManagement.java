@@ -39,17 +39,41 @@ public class RestaurantManagement {
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Map<String, Object> restaurantData = new HashMap<>(document.getData());
-                        restaurantData.put("id", document.getId()); // Thêm ID vào dữ liệu
-                        restaurantList.add(restaurantData);
+                        restaurantData.put("id", document.getId()); // Thêm ID nhà hàng vào dữ liệu
+
+                        // Lấy danh sách category
+                        db.collection("Restaurants")
+                                .document(document.getId())
+                                .collection("menu")
+                                .get()
+                                .addOnCompleteListener(menuTask -> {
+                                    if (menuTask.isSuccessful()) {
+                                        List<Map<String, String>> categoryList = new ArrayList<>();
+                                        for (QueryDocumentSnapshot categoryDoc : menuTask.getResult()) {
+                                            Map<String, String> categoryData = new HashMap<>();
+                                            categoryData.put("id", categoryDoc.getId()); // ID category
+                                            categoryData.put("name", categoryDoc.getString("name")); // Tên category
+                                            categoryList.add(categoryData);
+                                        }
+                                        // Thêm danh sách category vào dữ liệu của nhà hàng
+                                        restaurantData.put("categories", categoryList);
+                                    }
+                                    // Thêm dữ liệu vào danh sách nhà hàng
+                                    restaurantList.add(restaurantData);
+
+                                    // Nếu đã lấy hết tất cả nhà hàng thì gọi callback
+                                    if (restaurantList.size() == task.getResult().size()) {
+                                        callback.onSuccess(restaurantList);
+                                    }
+                                });
                     }
-                    // Gửi danh sách nhà hàng qua callback
-                    callback.onSuccess(restaurantList);
                 } else {
                     callback.onFailure(task.getException());
                 }
             }
         });
     }
+
 
 
     public interface MenuCategoryCallback {

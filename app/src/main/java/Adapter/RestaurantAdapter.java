@@ -18,7 +18,7 @@ import com.ltmb.ltmobile.RestaurantActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
+public class    RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
     private Context context;
     private List<Restaurant> listRes;
     private OnRestaurantClickListener listener;
