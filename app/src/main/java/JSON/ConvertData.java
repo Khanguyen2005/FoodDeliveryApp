@@ -6,6 +6,7 @@ import java.util.Map;
 
 import Adapter.Category;
 import Adapter.Food;
+import Adapter.Restaurant;
 
 public class ConvertData {
     public static List<Food> convertToFoodList(List<Map<String, Object>> dishList) {
@@ -40,4 +41,20 @@ public class ConvertData {
         }
         return categories;
     }
+    public static List<Restaurant> convertToRestaurantList(List<Map<String, Object>> restaurantList) {
+        List<Restaurant> restaurants = new ArrayList<>();
+        for (Map<String, Object> restaurantData : restaurantList) {
+            String id = (String) restaurantData.get("id");
+            String name = (String) restaurantData.get("name");
+            String starRes = (String) restaurantData.get("starRes");
+            String evaluateRes = (String) restaurantData.get("evaluateRes");
+            String imageUrl = (String) restaurantData.get("imageUrl");
+            String backgroundImageUrl = (String) restaurantData.get("backgroundImageUrl");
+
+            Restaurant restaurant = new Restaurant(id, name, starRes, evaluateRes,imageUrl, backgroundImageUrl);
+            restaurants.add(restaurant);
+        }
+        return restaurants;
+    }
+
 }

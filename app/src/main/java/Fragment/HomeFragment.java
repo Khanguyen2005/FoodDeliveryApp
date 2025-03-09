@@ -6,18 +6,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ltmb.ltmobile.CategoryActivity;
 import com.ltmb.ltmobile.MainActivity;
 import com.ltmb.ltmobile.R;
 import com.ltmb.ltmobile.RestaurantActivity;
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -60,9 +63,25 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         loadRestaurants();
+        LinearLayout layoutRice = view.findViewById(R.id.layoutRice);
+        LinearLayout layoutNoodle = view.findViewById(R.id.layoutNoodle);
+        LinearLayout layoutMilkTea = view.findViewById(R.id.layoutMilktea);
+        LinearLayout layoutFriedChicken = view.findViewById(R.id.layoutFriedChicken);
+        LinearLayout layoutSnack = view.findViewById(R.id.layoutSnack);
+        layoutRice.setOnClickListener(v -> openCategory(Arrays.asList("cơm","rice")));
+        layoutNoodle.setOnClickListener(v -> openCategory(Arrays.asList("bún", "mì", "phở", "hủ tiếu", "bánh canh")));
+        layoutFriedChicken.setOnClickListener(v -> openCategory(Arrays.asList("gà rán", "pizza", "burger", "khoai tây chiên")));
+        layoutSnack.setOnClickListener(v -> openCategory(Arrays.asList("bánh tráng", "trà sữa", "ăn vặt", "tea")));
+        layoutMilkTea.setOnClickListener(v -> openCategory(Arrays.asList("trà", "trà sữa", "cà phê", "tea")));
 
         return view;
     }
+    private void openCategory(List<String> keywords) {
+        Intent intent = new Intent(requireContext(), CategoryActivity.class);
+        intent.putStringArrayListExtra("CATEGORY_KEYWORDS", new ArrayList<>(keywords));
+        startActivity(intent);
+    }
+
 
     private void loadRestaurants() {
         restaurantManagement = new RestaurantManagement();

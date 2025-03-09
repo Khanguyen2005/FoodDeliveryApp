@@ -114,13 +114,28 @@ public class RestaurantDetailFragment extends Fragment {
         imgRestaurant = view.findViewById(R.id.img_res);
         imgBackground = view.findViewById(R.id.background_image);
 
+
         txtName.setText(name);
         txtStar.setText("⭐ " + star);
         txtEvaluate.setText(evaluate);
 
-        Glide.with(this).load(imageUrl).into(imgRestaurant);
+        Button btnBack = view.findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> {
+            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                getParentFragmentManager().popBackStack();
+            } else {
+                requireActivity().finish();
+            }
+        });
+
+
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            Glide.with(this).load(R.mipmap.ic_launcher).into(imgRestaurant);
+        } else {
+            Glide.with(this).load(imageUrl).into(imgRestaurant);
+        }
+
         if (backgroundImage == null || backgroundImage.isEmpty()) {
-            Glide.with(this).load(backgroundImage).into(imgBackground);
             Glide.with(this).load(imageUrl).into(imgBackground);
         } else {
             Glide.with(this).load(backgroundImage).into(imgBackground);

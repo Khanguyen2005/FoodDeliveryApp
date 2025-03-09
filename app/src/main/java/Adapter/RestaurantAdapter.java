@@ -28,6 +28,12 @@ public class    RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter
         this.listener = listener;
         this.listRes = new ArrayList<>();
     }
+    public void setList(List<Restaurant> list) {
+        this.listRes.clear();
+        this.listRes.addAll(list);
+        notifyDataSetChanged();
+    }
+
 
     public void setData(List<Restaurant> listRes){
         if (listRes == null) {
@@ -57,7 +63,7 @@ public class    RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter
                     .load(res.getImageUrl())
                     .into(holder.imgRes);
         } else {
-            holder.imgRes.setImageResource(R.drawable.lotterialogo);
+            holder.imgRes.setImageResource(R.mipmap.ic_launcher);
         }
 
         // Set dữ liệu với kiểm tra null
