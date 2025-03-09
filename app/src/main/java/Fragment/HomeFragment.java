@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ltmb.ltmobile.MainActivity;
 import com.ltmb.ltmobile.R;
+import com.ltmb.ltmobile.RestaurantActivity;
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class HomeFragment extends Fragment {
         listRes = new ArrayList<>();
         adapter = new RestaurantAdapter(getContext(), restaurant -> {
             // Xử lý khi click vào nhà hàng
-            Intent i = new Intent(getContext(), MainActivity.class);
+            Intent i = new Intent(getContext(), RestaurantActivity.class);
             i.putExtra("restaurant_id", restaurant.getId());
             startActivity(i);
         });
@@ -76,8 +77,9 @@ public class HomeFragment extends Fragment {
                         String starRes = String.valueOf(data.get("starRes"));
                         String evaluateRes = (String) data.get("evaluateRes");
                         String imgUrl = (String) data.get("image");
+                        String backgroundImgUrl = (String) data.get("backgroundImage");
 
-                        Restaurant res = new Restaurant(id, name, starRes, evaluateRes, imgUrl);
+                        Restaurant res = new Restaurant(id, name, starRes, evaluateRes, imgUrl,backgroundImgUrl);
                         listRes.add(res);
                     } catch (Exception e) {
                         Log.e("Firestore", "Lỗi chuyển đổi dữ liệu", e);

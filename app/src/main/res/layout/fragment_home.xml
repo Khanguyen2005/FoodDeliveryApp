@@ -292,26 +292,26 @@
                                 <ImageView
                                     android:layout_width="250dp"
                                     android:layout_height="match_parent"
+                                    android:src="@drawable/burgerbanner"
                                     android:contentDescription="Image description"
                                     />
-<!--                                android:src="@drawable/burgerbanner"-->
 
                                 <ImageView
                                     android:layout_width="250dp"
                                     android:layout_marginLeft="10sp"
                                     android:layout_height="match_parent"
+                                    android:src="@drawable/chickenbanner"
                                     android:contentDescription="Image description"
                                      />
-<!--                                android:src="@drawable/chickenbanner"-->
 
 
                                 <ImageView
                                     android:layout_width="250dp"
                                     android:layout_marginLeft="10sp"
                                     android:layout_height="match_parent"
+                                    android:src="@drawable/pizzabanner"
                                     android:contentDescription="Image description"
                                      />
-<!--                                android:src="@drawable/pizzabanner"-->
 
                             </LinearLayout>
                         </LinearLayout>
@@ -361,7 +361,7 @@
                                     android:layout_width="70dp"
                                     android:layout_height="70dp"
                                     android:contentDescription="Image description" />
-<!--                                android:src="@drawable/jollibee"-->
+                                android:src="@drawable/jollibee"
 
                                 <!-- Chữ bên cạnh ảnh -->
                                 <TextView

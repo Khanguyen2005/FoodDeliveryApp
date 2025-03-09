@@ -1,6 +1,7 @@
 package Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.ltmb.ltmobile.R;
+import com.ltmb.ltmobile.RestaurantActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +26,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     public RestaurantAdapter(Context context, OnRestaurantClickListener listener) {
         this.context = context;
         this.listener = listener;
-        this.listRes = new ArrayList<>(); // Khởi tạo danh sách để tránh null
+        this.listRes = new ArrayList<>();
     }
 
     public void setData(List<Restaurant> listRes){
         if (listRes == null) {
-            this.listRes = new ArrayList<>(); // Tránh null
+            this.listRes = new ArrayList<>();
         } else {
             this.listRes = listRes;
         }
@@ -42,6 +44,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_restaurant, parent, false);
         return new RestaurantViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull RestaurantViewHolder holder, int position) {
@@ -59,14 +62,19 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
         // Set dữ liệu với kiểm tra null
         holder.nameRes.setText(res.getName() != null ? res.getName() : "Không có tên");
-        holder.evaluateRes.setText(res.getEvaluateRes() != null ? res.getEvaluateRes() : "0 đánh giá");
-        holder.starRes.setText(res.getStarRes() != null ? res.getStarRes() : "0.0");
+        holder.evaluateRes.setText(res.getEvaluateRes() != null ? res.getEvaluateRes() : " 0 đánh giá");
+        holder.starRes.setText((res != null && res.getStarRes() != null && !res.getStarRes().isEmpty()) ? res.getStarRes() : "5.0");
 
         // Sự kiện click vào item
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onRestaurantClick(res);
-            }
+            Intent intent = new Intent(context, RestaurantActivity.class);
+            intent.putExtra("id",res.getId());
+            intent.putExtra("name",res.getName());
+            intent.putExtra("star",res.getStarRes());
+            intent.putExtra("evaluate",res.getEvaluateRes());
+            intent.putExtra("image",res.getImageUrl());
+            intent.putExtra("backgroundImage", res.getBackgroundImg());
+            context.startActivity(intent);
         });
     }
 

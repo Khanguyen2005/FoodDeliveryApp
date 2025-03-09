@@ -13,6 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -22,12 +23,10 @@
                     android:id="@+id/background_image"
                     android:layout_width="match_parent"
                     android:layout_height="170dp"
-
-
                     android:scaleType="centerCrop"
+                    android:background="@drawable/rounded_corner_bottom"
                     android:clipToOutline="true" />
 <!--                android:src="@drawable/lotteriabanner"-->
-<!--                android:background="@drawable/rounded_corner_bottom"-->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="170dp"
@@ -46,8 +45,8 @@
                     android:background="@drawable/rounded_corner">
                     <ImageView
                         android:id="@+id/img_res"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:scaleType="centerCrop"
                         android:background="@drawable/rounded_corner"
                         android:clipToOutline="true"
@@ -59,6 +58,7 @@
                         android:layout_marginLeft="10dp"
                         android:orientation="vertical">
                         <TextView
+                            android:id="@+id/name_Res"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="JOLLIBEE - Nguyễn Ảnh Thủ"
@@ -73,11 +73,6 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="10dp"
                             >
-                            <ImageView
-                                android:id="@+id/imageView"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                app:srcCompat="@drawable/star_svgrepo_com" />
                             <TextView
                                 android:id="@+id/star_res"
                                 android:layout_width="wrap_content"
@@ -92,6 +87,7 @@
                                 android:id="@+id/evaluate_Res"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
                                 android:text="(8 đánh giá)"
                                 android:layout_gravity="center"
                                 />
@@ -271,7 +267,7 @@
                 android:fillViewport="true">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcvFood"
+                    android:id="@+id/rcvCate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -291,7 +287,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"
             android:backgroundTint="@color/white"
-
+            android:drawableLeft="@drawable/arrow_sm_left_svgrepo_com"
             android:padding="10dp"
             android:elevation="20dp"/>
 <!--        android:drawableLeft="@drawable/baseline_arrow_back_24"-->
@@ -306,7 +302,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="10dp"
             android:backgroundTint="@color/white"
-
+            android:drawableLeft="@drawable/share_filled_svgrepo_com"
             android:padding="10dp"
             android:elevation="20dp"/>
 <!--        android:drawableLeft="@drawable/baseline_share_24"-->

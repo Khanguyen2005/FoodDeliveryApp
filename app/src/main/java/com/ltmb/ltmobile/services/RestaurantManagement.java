@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Adapter.Food;
+
 public class RestaurantManagement {
 
     private FirebaseFirestore db;
@@ -51,7 +53,7 @@ public class RestaurantManagement {
 
 
     public interface MenuCategoryCallback {
-        void onSuccess(List<Map<String, String>> categoryList);
+        void onSuccess(List<Map<String, Object>> categoryList);
         void onFailure(Exception e);
     }
 
@@ -64,12 +66,11 @@ public class RestaurantManagement {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    List<Map<String, String>> categoryList = new ArrayList<>();
+                    List<Map<String, Object>> categoryList = new ArrayList<>();
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Map<String, String> categoryData = new HashMap<>();
-                        categoryData.put("id", document.getId()); // Lấy ID của loại món ăn
-                        categoryData.put("name", document.getString("name")); // Lấy tên loại món ăn
+                        Map<String, Object> categoryData = new HashMap<>(document.getData());
+                        categoryData.put("id", document.getId()); // Thêm ID vào danh mục
                         categoryList.add(categoryData);
                     }
                     // Trả kết quả qua callback
@@ -80,6 +81,7 @@ public class RestaurantManagement {
             }
         });
     }
+
     public interface DishCallback {
         void onSuccess(List<Map<String, Object>> dishList);
         void onFailure(Exception e);
@@ -116,5 +118,6 @@ public class RestaurantManagement {
             }
         });
     }
+
 
 }

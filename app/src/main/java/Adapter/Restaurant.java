@@ -5,17 +5,18 @@ public class Restaurant {
     private String name;
     private String starRes;
     private String evaluateRes;
-    private String imageUrl;
+    private String imageUrl,backgroundImg;
 
     public Restaurant() {
     }
 
-    public Restaurant(String id, String name, String starRes, String evaluateRes, String imageUrl) {
+    public Restaurant(String id, String name, String starRes, String evaluateRes, String imageUrl, String backgroundImg) {
         this.id = id;
         this.name = name;
         this.starRes = starRes;
         this.evaluateRes = evaluateRes;
         this.imageUrl = imageUrl;
+        this.backgroundImg = backgroundImg;
     }
 
     public String getId() {
@@ -56,5 +57,13 @@ public class Restaurant {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getBackgroundImg() {
+        return backgroundImg;
+    }
+
+    public void setBackgroundImg(String backgroundImg) {
+        this.backgroundImg = backgroundImg;
     }
 }
