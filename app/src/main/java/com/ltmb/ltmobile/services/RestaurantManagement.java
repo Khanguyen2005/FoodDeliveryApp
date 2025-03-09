@@ -191,5 +191,38 @@ public class RestaurantManagement {
     public interface DiscountCallback {
         void onResult(boolean isValid, long discountPercentage);
     }
+    public interface ToppingCallback {
+        void onSuccess(List<Map<String, Object>> toppingList);
+        void onFailure(Exception e);
+    }
+
+    public void getToppings(String restaurantId, String categoryId, final ToppingCallback callback) {
+        CollectionReference toppingRef = db.collection("Restaurants")
+                .document(restaurantId)
+                .collection("menu")
+                .document(categoryId)
+                .collection("topping");
+
+        toppingRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<Map<String, Object>> toppingList = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Map<String, Object> toppingData = new HashMap<>();
+                        toppingData.put("name", document.getString("name"));
+                        toppingData.put("price", document.getLong("price"));
+                        toppingList.add(toppingData);
+                    }
+
+                    // Trả kết quả qua callback
+                    callback.onSuccess(toppingList);
+                } else {
+                    callback.onFailure(task.getException());
+                }
+            }
+        });
+    }
 
 }
