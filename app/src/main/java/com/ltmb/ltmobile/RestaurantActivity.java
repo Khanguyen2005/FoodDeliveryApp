@@ -27,15 +27,15 @@ public class RestaurantActivity extends AppCompatActivity {
         if(intent != null){
             String id = intent.getStringExtra("id");
             String name = intent.getStringExtra("name");
-            String star = intent.getStringExtra("star");
-            String evaluate = intent.getStringExtra("evaluate");
+            double star = intent.getDoubleExtra("star", 5.0);
+            int evaluate = intent.getIntExtra("evaluate", 0);
             String image = intent.getStringExtra("image");
             String background = intent.getStringExtra("backgroundImage");
-            RestaurantDetailFragment fragment = RestaurantDetailFragment.newInstance(id,name, star, evaluate, image,background);
+
+            RestaurantDetailFragment fragment = RestaurantDetailFragment.newInstance(id, name, star, evaluate, image, background);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_layout_res, fragment);
             transaction.commit();
         }
-
     }
 }

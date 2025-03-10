@@ -19,12 +19,14 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btnBack"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 android:drawableLeft="@drawable/arrow_sm_left_svgrepo_com"/>
 
             <TextView
+                android:id="@+id/cateTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"

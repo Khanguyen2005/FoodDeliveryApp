@@ -46,12 +46,12 @@ public class ConvertData {
         for (Map<String, Object> restaurantData : restaurantList) {
             String id = (String) restaurantData.get("id");
             String name = (String) restaurantData.get("name");
-            String starRes = (String) restaurantData.get("starRes");
-            String evaluateRes = (String) restaurantData.get("evaluateRes");
+            Number starRes = restaurantData.get("starRes") != null ? Double.parseDouble(restaurantData.get("starRes").toString()) : 5.0;
+            Number evaluate = restaurantData.get("evaluate") != null ? Integer.parseInt(restaurantData.get("evaluate").toString()) : 5.0;
             String imageUrl = (String) restaurantData.get("imageUrl");
             String backgroundImageUrl = (String) restaurantData.get("backgroundImageUrl");
 
-            Restaurant restaurant = new Restaurant(id, name, starRes, evaluateRes,imageUrl, backgroundImageUrl);
+            Restaurant restaurant = new Restaurant(id, name, starRes, evaluate,imageUrl, backgroundImageUrl);
             restaurants.add(restaurant);
         }
         return restaurants;

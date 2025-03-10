@@ -118,7 +118,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     public class FoodViewHolder extends RecyclerView.ViewHolder {
         private ImageView imgFood;
-        private TextView name, price, quantitySold, category;
+        private TextView name, price, quantitySold;
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -127,7 +127,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             name = itemView.findViewById(R.id.food_name);
             quantitySold = itemView.findViewById(R.id.quantitySold);
             price = itemView.findViewById(R.id.price_food);
-            category = itemView.findViewById(R.id.food_category);
         }
 
         public void bind(Food food, OnItemClickListener listener, String categoryId) {

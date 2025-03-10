@@ -68,13 +68,6 @@
                 android:textColor="@color/color_main"
                 android:layout_toEndOf="@+id/img_res"
                 />
-            <TextView
-                android:id="@+id/food_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Category"
-                android:textSize="14sp"
-                android:textColor="@color/black"/>
         </LinearLayout>
         <TextView
             android:layout_width="35dp"

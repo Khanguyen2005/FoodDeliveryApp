@@ -36,7 +36,8 @@ import JSON.ConvertData;
 
 public class RestaurantDetailFragment extends Fragment {
     private RecyclerView rcvCate;
-    private String restaurantId, name, star, evaluate, imageUrl, backgroundImage;
+    private String restaurantId, name, imageUrl, backgroundImage;
+    private double star, evaluate;
     private CategoryAdapter categoryAdapter;
     private ScrollView scrollView;
     private LinearLayout headerLayout;
@@ -50,19 +51,21 @@ public class RestaurantDetailFragment extends Fragment {
     private static final String ARG_STAR = "star";
     private static final String ARG_EVALUATE = "evaluate";
     private static final String ARG_IMAGE_URL = "imageUrl";
+    LinearLayout layoutBtnCate ;
+
     private static final String ARG_BACKGROUND_IMAGE_URL = "backgroundImageUrl";
 
     public RestaurantDetailFragment() {
         // Required empty public constructor
     }
 
-    public static RestaurantDetailFragment newInstance(String id, String name, String star, String evaluate, String imageUrl, String backgroundImage) {
+    public static RestaurantDetailFragment newInstance(String id, String name, double star, double evaluate, String imageUrl, String backgroundImage) {
         RestaurantDetailFragment fragment = new RestaurantDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ID, id);
         args.putString(ARG_NAME, name);
-        args.putString(ARG_STAR, star);
-        args.putString(ARG_EVALUATE, evaluate);
+        args.putDouble(ARG_STAR, star);  // Sử dụng putDouble thay vì putString
+        args.putDouble(ARG_EVALUATE, evaluate);
         args.putString(ARG_IMAGE_URL, imageUrl);
         args.putString(ARG_BACKGROUND_IMAGE_URL, backgroundImage);
         fragment.setArguments(args);
@@ -75,8 +78,8 @@ public class RestaurantDetailFragment extends Fragment {
         if (getArguments() != null) {
             restaurantId = getArguments().getString(ARG_ID);
             name = getArguments().getString(ARG_NAME, "Không có tên");
-            star = getArguments().getString(ARG_STAR, "0.0");
-            evaluate = getArguments().getString(ARG_EVALUATE, "Chưa có đánh giá");
+            star = getArguments().getDouble(ARG_STAR, 0.0);  // Lấy kiểu double
+            evaluate = getArguments().getDouble(ARG_EVALUATE, 0.0);
             imageUrl = getArguments().getString(ARG_IMAGE_URL, "");
             backgroundImage = getArguments().getString(ARG_BACKGROUND_IMAGE_URL, "");
         }
@@ -93,15 +96,13 @@ public class RestaurantDetailFragment extends Fragment {
         imgRestaurant = view.findViewById(R.id.img_res);
         imgBackground = view.findViewById(R.id.background_image);
         Button btnBack = view.findViewById(R.id.btnBack);
-        Button btnOpenBottomSheet = view.findViewById(R.id.btnGaRan);
         scrollView = view.findViewById(R.id.scrollview);
         headerLayout = view.findViewById(R.id.layoutBtn);
         rcvCate = view.findViewById(R.id.rcvCate);
 
         txtName.setText(name);
-        txtStar.setText("⭐ " + star);
-        txtEvaluate.setText(evaluate);
-
+        txtStar.setText(String.format("⭐ %.1f", star)); // Hiển thị 1 số thập phân
+        txtEvaluate.setText(String.format("%.0f đánh giá", evaluate)); // Hiển thị số nguyên
 
         btnBack.setOnClickListener(v -> {
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
@@ -114,19 +115,13 @@ public class RestaurantDetailFragment extends Fragment {
         loadImage(imageUrl, imgRestaurant);
         loadImage(backgroundImage.isEmpty() ? imageUrl : backgroundImage, imgBackground);
 
-
-        // Xử lý mở BottomSheet
-        btnOpenBottomSheet.setOnClickListener(v -> {
-            BottomSheetAddTopping bottomSheet = new BottomSheetAddTopping();
-            bottomSheet.show(getParentFragmentManager(), "BottomSheetTopping");
-        });
-
         // Cấu hình RecyclerView danh mục
         categoryAdapter = new CategoryAdapter(getContext(), listCate, restaurantId);
         rcvCate.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         rcvCate.setAdapter(categoryAdapter);
         rcvCate.setNestedScrollingEnabled(false);
 
+        layoutBtnCate = view.findViewById(R.id.layoutBtnCate);
         // Load danh mục món ăn
         loadCategories();
 
@@ -136,8 +131,6 @@ public class RestaurantDetailFragment extends Fragment {
             headerLayout.setBackgroundColor(scrollY > 100 ? ContextCompat.getColor(getContext(), R.color.white) : Color.TRANSPARENT);
         });
 
-
-
         return view;
     }
 
@@ -146,6 +139,40 @@ public class RestaurantDetailFragment extends Fragment {
             Glide.with(this).load(R.mipmap.ic_launcher).into(imageView);
         } else {
             Glide.with(this).load(url).into(imageView);
+        }
+    }
+    private void addCategoryButtons(List<Category> categories) {
+        layoutBtnCate.removeAllViews();
+
+        for (Category category : categories) {
+            Button btnCategory = new Button(getContext());
+            btnCategory.setText(category.getName());
+            btnCategory.setPadding(20, 10, 20, 10);
+            btnCategory.setBackground(ContextCompat.getDrawable(getContext(), R.color.white));
+            btnCategory.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+
+            btnCategory.setOnClickListener(v -> scrollToCategory(category.getId()));
+
+            layoutBtnCate.addView(btnCategory);
+        }
+    }
+
+    private void scrollToCategory(String categoryId) {
+        View targetView = null;
+
+        for (int i = 0; i < rcvCate.getChildCount(); i++) {
+            View child = rcvCate.getChildAt(i);
+            Category category = listCate.get(i);
+
+            if (category.getId().equals(categoryId)) {
+                targetView = child;
+                break;
+            }
+        }
+
+        if (targetView != null) {
+            int scrollY = targetView.getTop() + rcvCate.getTop();
+            scrollView.post(() -> scrollView.smoothScrollTo(0, scrollY));
         }
     }
 
@@ -162,6 +189,8 @@ public class RestaurantDetailFragment extends Fragment {
                 listCate.clear();
                 listCate.addAll(categories);
                 categoryAdapter.notifyDataSetChanged();
+
+                addCategoryButtons(categories);
 
                 for (Category cate : categories) {
                     restaurantManagement.getDishes(restaurantId, cate.getId(), new RestaurantManagement.DishCallback() {
@@ -187,4 +216,6 @@ public class RestaurantDetailFragment extends Fragment {
         });
     }
 
+
 }
+

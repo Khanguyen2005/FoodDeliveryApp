@@ -2,6 +2,7 @@ package Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,17 +69,16 @@ public class    RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter
 
         // Set dữ liệu với kiểm tra null
         holder.nameRes.setText(res.getName() != null ? res.getName() : "Không có tên");
-        holder.evaluateRes.setText(res.getEvaluateRes() != null ? res.getEvaluateRes() : " 0 đánh giá");
-        holder.starRes.setText((res != null && res.getStarRes() != null && !res.getStarRes().isEmpty()) ? res.getStarRes() : "5.0");
+        holder.evaluateRes.setText(res.getEvaluateRes() != null ? String.valueOf(res.getEvaluateRes()) + " đánh giá" : "0 đánh giá");
+        holder.starRes.setText(String.valueOf(res.getStarRes() != null ? res.getStarRes() : 5.0));
 
-        // Sự kiện click vào item
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, RestaurantActivity.class);
-            intent.putExtra("id",res.getId());
-            intent.putExtra("name",res.getName());
-            intent.putExtra("star",res.getStarRes());
-            intent.putExtra("evaluate",res.getEvaluateRes());
-            intent.putExtra("image",res.getImageUrl());
+            intent.putExtra("id", res.getId());
+            intent.putExtra("name", res.getName());
+            intent.putExtra("star", res.getStarRes());
+            intent.putExtra("evaluate", res.getEvaluateRes());
+            intent.putExtra("image", res.getImageUrl());
             intent.putExtra("backgroundImage", res.getBackgroundImg());
             context.startActivity(intent);
         });

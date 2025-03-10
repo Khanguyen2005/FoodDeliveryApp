@@ -69,10 +69,10 @@ public class HomeFragment extends Fragment {
         LinearLayout layoutFriedChicken = view.findViewById(R.id.layoutFriedChicken);
         LinearLayout layoutSnack = view.findViewById(R.id.layoutSnack);
         layoutRice.setOnClickListener(v -> openCategory(Arrays.asList("cơm","rice")));
-        layoutNoodle.setOnClickListener(v -> openCategory(Arrays.asList("bún", "mì", "phở", "hủ tiếu", "bánh canh")));
+        layoutNoodle.setOnClickListener(v -> openCategory(Arrays.asList("bún, mì, phở","bún", "mì", "phở", "hủ tiếu", "bánh canh")));
         layoutFriedChicken.setOnClickListener(v -> openCategory(Arrays.asList("gà rán","gà giòn", "pizza", "burger", "khoai tây chiên")));
-        layoutSnack.setOnClickListener(v -> openCategory(Arrays.asList("bánh tráng", "trà sữa", "ăn vặt", "tea")));
-        layoutMilkTea.setOnClickListener(v -> openCategory(Arrays.asList("trà", "trà sữa", "cà phê", "tea")));
+        layoutSnack.setOnClickListener(v -> openCategory(Arrays.asList("Ăn vặt","bánh tráng", "trà sữa", "tea")));
+        layoutMilkTea.setOnClickListener(v -> openCategory(Arrays.asList("trà sữa", "trà", "cà phê", "tea")));
 
         return view;
     }
@@ -93,12 +93,12 @@ public class HomeFragment extends Fragment {
                     try {
                         String id = String.valueOf(data.get("id"));
                         String name = (String) data.get("name");
-                        String starRes = String.valueOf(data.get("starRes"));
-                        String evaluateRes = (String) data.get("evaluateRes");
+                        Number starRes = data.get("starRes") != null ? Double.parseDouble(data.get("starRes").toString()) : 5.0;
+                        Number evaluate = data.get("evaluate") != null ? Integer.parseInt(data.get("evaluate").toString()) : 0;
                         String imgUrl = (String) data.get("image");
                         String backgroundImgUrl = (String) data.get("backgroundImage");
 
-                        Restaurant res = new Restaurant(id, name, starRes, evaluateRes, imgUrl,backgroundImgUrl);
+                        Restaurant res = new Restaurant(id, name, starRes, evaluate, imgUrl,backgroundImgUrl);
                         listRes.add(res);
                     } catch (Exception e) {
                         Log.e("Firestore", "Lỗi chuyển đổi dữ liệu", e);

@@ -3,6 +3,8 @@ package com.ltmb.ltmobile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ltmb.ltmobile.services.RestaurantManagement;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +26,7 @@ import Adapter.RestaurantAdapter;
 
 public class CategoryActivity extends AppCompatActivity {
     private List<String> categoryKeywords;
+    private String categoryId;
     private RecyclerView recyclerView;
     private RestaurantAdapter adapter;
     private List<Restaurant> listRes;
@@ -32,14 +37,21 @@ public class CategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_category);
-
+        TextView txtCategoryTitle = findViewById(R.id.cateTitle);
         Intent intent = getIntent();
         if (intent != null) {
             categoryKeywords = intent.getStringArrayListExtra("CATEGORY_KEYWORDS");
             if (categoryKeywords == null) {
                 categoryKeywords = new ArrayList<>();
             }
+            if (!categoryKeywords.isEmpty()) {
+                txtCategoryTitle.setText(categoryKeywords.get(0).toUpperCase());
+            } else {
+                txtCategoryTitle.setText("Danh mục");
+            }
         }
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
 
         recyclerView = findViewById(R.id.rcvRes);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -83,12 +95,12 @@ public class CategoryActivity extends AppCompatActivity {
                                             }
 
                                             String name = (String) data.get("name");
-                                            String starRes = String.valueOf(data.get("starRes"));
-                                            String evaluateRes = (String) data.get("evaluateRes");
+                                            Number starRes = data.get("starRes") != null ? Double.parseDouble(data.get("starRes").toString()) : 5.0;
+                                            Number evaluate = data.get("evaluate") != null ? Integer.parseInt(data.get("evaluate").toString()) : 0;
                                             String imgUrl = (String) data.get("image");
                                             String backgroundImgUrl = (String) data.get("backgroundImage");
 
-                                            Restaurant res = new Restaurant(id, name, starRes, evaluateRes, imgUrl, backgroundImgUrl);
+                                            Restaurant res = new Restaurant(id, name, starRes, evaluate, imgUrl, backgroundImgUrl);
                                             listRes.add(res);
                                             restaurantIds.add(id); // Thêm ID vào Set để tránh trùng lặp
                                             break;

@@ -3,14 +3,13 @@ package Adapter;
 public class Restaurant {
     private String id;
     private String name;
-    private String starRes;
-    private String evaluateRes;
+    private Number starRes,evaluateRes;
     private String imageUrl,backgroundImg;
 
     public Restaurant() {
     }
 
-    public Restaurant(String id, String name, String starRes, String evaluateRes, String imageUrl, String backgroundImg) {
+    public Restaurant(String id, String name, Number starRes, Number evaluateRes, String imageUrl, String backgroundImg) {
         this.id = id;
         this.name = name;
         this.starRes = starRes;
@@ -35,19 +34,20 @@ public class Restaurant {
         this.name = name;
     }
 
-    public String getStarRes() {
-        return starRes;
+    public Number getStarRes() {
+        return starRes == null  ? 5.0 : starRes;
     }
 
-    public void setStarRes(String starRes) {
+
+    public void setStarRes(Number starRes) {
         this.starRes = starRes;
     }
 
-    public String getEvaluateRes() {
+    public Number getEvaluateRes() {
         return evaluateRes;
     }
 
-    public void setEvaluateRes(String evaluateRes) {
+    public void setEvaluateRes(Number evaluateRes) {
         this.evaluateRes = evaluateRes;
     }
 
