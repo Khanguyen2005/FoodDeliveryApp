@@ -122,7 +122,7 @@ public class RestaurantDetailFragment extends Fragment {
         });
 
         // Cấu hình RecyclerView danh mục
-        categoryAdapter = new CategoryAdapter(getContext(), listCate);
+        categoryAdapter = new CategoryAdapter(getContext(), listCate, restaurantId);
         rcvCate.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         rcvCate.setAdapter(categoryAdapter);
         rcvCate.setNestedScrollingEnabled(false);
