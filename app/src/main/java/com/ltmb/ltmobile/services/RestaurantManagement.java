@@ -1,5 +1,7 @@
 package com.ltmb.ltmobile.services;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,9 +55,9 @@ public class RestaurantManagement {
                                             Map<String, String> categoryData = new HashMap<>();
                                             categoryData.put("id", categoryDoc.getId()); // ID category
                                             categoryData.put("name", categoryDoc.getString("name")); // Tên category
-                                            categoryData.put("discount_code", categoryDoc.getString("discount_code")); //Ma giam
-                                            categoryData.put("discount_description", categoryDoc.getString("discount_description")); // mo ta code
-                                            categoryData.put("discount_percentage", categoryDoc.getString("discount_percentage")); // % giam gia
+//                                            categoryData.put("discount_code", categoryDoc.getString("discount_code")); //Ma giam
+//                                            categoryData.put("discount_description", categoryDoc.getString("discount_description")); // mo ta code
+//                                            categoryData.put("discount_percentage", categoryDoc.getString("discount_percentage")); // % giam gia
                                             categoryList.add(categoryData);
                                         }
                                         // Thêm danh sách category vào dữ liệu của nhà hàng
@@ -197,6 +199,7 @@ public class RestaurantManagement {
     }
 
     public void getToppings(String restaurantId, String categoryId, final ToppingCallback callback) {
+
         CollectionReference toppingRef = db.collection("Restaurants")
                 .document(restaurantId)
                 .collection("menu")

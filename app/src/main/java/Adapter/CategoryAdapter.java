@@ -20,7 +20,12 @@ import java.util.Map;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
     private Context context;
     private List<Category> listCate;
-    private RestaurantManagement restaurantManagement;
+    private OnFoodClickListener foodClickListener;
+
+    public void setOnFoodClickListener(OnFoodClickListener listener) {
+        this.foodClickListener = listener;
+    }
+
     public CategoryAdapter(Context context, List<Category> listCate){
         this.context = context;
         this.listCate = listCate;
@@ -43,15 +48,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.nameCate.setText(category.getName());
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL,false);
-
         holder.rcvFood.setLayoutManager(linearLayoutManager);
 
         List<Food> foodList = category.getListFood();
         if (foodList == null) {
             foodList = new ArrayList<>();
         }
-        FoodAdapter foodAdapter = new FoodAdapter(holder.itemView.getContext());
+        FoodAdapter foodAdapter = new FoodAdapter(holder.itemView.getContext(), category.getId());
         foodAdapter.setData(foodList);
+
+
+
         holder.rcvFood.setAdapter(foodAdapter);
     }
 
@@ -72,4 +79,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             rcvFood = itemView.findViewById(R.id.rcvFood);
         }
     }
+    public interface OnFoodClickListener {
+        void onFoodClick(Food food, String categoryId);
+    }
+
 }

@@ -1,6 +1,8 @@
 package Adapter;
 
-public class Food {
+import java.io.Serializable;
+
+public class Food implements Serializable {
     private String id;
     private Number price,quantitySold;
     private String name,imgUrl,description;
@@ -60,4 +62,5 @@ public class Food {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

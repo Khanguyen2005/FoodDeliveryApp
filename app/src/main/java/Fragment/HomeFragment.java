@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
         LinearLayout layoutSnack = view.findViewById(R.id.layoutSnack);
         layoutRice.setOnClickListener(v -> openCategory(Arrays.asList("cơm","rice")));
         layoutNoodle.setOnClickListener(v -> openCategory(Arrays.asList("bún", "mì", "phở", "hủ tiếu", "bánh canh")));
-        layoutFriedChicken.setOnClickListener(v -> openCategory(Arrays.asList("gà rán", "pizza", "burger", "khoai tây chiên")));
+        layoutFriedChicken.setOnClickListener(v -> openCategory(Arrays.asList("gà rán","gà giòn", "pizza", "burger", "khoai tây chiên")));
         layoutSnack.setOnClickListener(v -> openCategory(Arrays.asList("bánh tráng", "trà sữa", "ăn vặt", "tea")));
         layoutMilkTea.setOnClickListener(v -> openCategory(Arrays.asList("trà", "trà sữa", "cà phê", "tea")));
 
