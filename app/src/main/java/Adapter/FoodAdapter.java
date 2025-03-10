@@ -97,11 +97,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         holder.name.setText(food.getName());
 
-        if (food.getQuantitySold() instanceof Number) {
-            holder.quantitySold.setText(String.valueOf(((Number) food.getQuantitySold()).longValue()));
+        if (food.getQuantitySold() != 0) {
+            holder.quantitySold.setText(food.getQuantitySold() + " đã bán");
         } else {
             holder.quantitySold.setText("0 phần đã bán");
         }
+
 
         if (food.getPrice() instanceof Number) {
             holder.price.setText(String.valueOf(((Number) food.getPrice()).longValue()));
@@ -133,17 +134,19 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             name.setText(food.getName());
             price.setText(String.format("%.0f", food.getPrice()));
 
-
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onItemClick(food);
-                    Toast.makeText(context, "item đã được click", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Item đã được click", Toast.LENGTH_LONG).show();
                 }
-                // 🔹 Mở BottomSheet khi click vào món ăn
-                BottomSheetAddTopping bottomSheet = BottomSheetAddTopping.newInstance(restaurantId, categoryId);
+
+                String foodId = food.getId();
+
+                BottomSheetAddTopping bottomSheet = BottomSheetAddTopping.newInstance(restaurantId, categoryId, foodId);
                 bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), "BottomSheetAddTopping");
             });
         }
+
     }
 
     public interface OnFoodClickListener {

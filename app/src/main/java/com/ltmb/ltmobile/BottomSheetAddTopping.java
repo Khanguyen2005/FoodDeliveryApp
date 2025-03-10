@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox; // 🔹 Thêm import CheckBox để tạo danh sách toppings
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -26,15 +29,19 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
 
     private String restaurantId;
     private String categoryId;
+    ImageView imageView;
+    private String foodId;
+    TextView nameFood,quantitySold,price_food;
     private RestaurantManagement restaurantManagement;
     private LinearLayout toppingContainer; // 🔹 Thêm LinearLayout để chứa danh sách toppings
 
     // 🔹 Hàm tạo để nhận dữ liệu từ FoodAdapter
-    public static BottomSheetAddTopping newInstance(String restaurantId, String categoryId) {
+    public static BottomSheetAddTopping newInstance(String restaurantId, String categoryId, String foodId) {
         BottomSheetAddTopping fragment = new BottomSheetAddTopping();
         Bundle args = new Bundle();
         args.putString("restaurantId", restaurantId);
         args.putString("categoryId", categoryId);
+        args.putString("foodId", foodId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +60,13 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
         if (getArguments() != null) {
             restaurantId = getArguments().getString("restaurantId");
             categoryId = getArguments().getString("categoryId");
+            foodId = getArguments().getString("foodId");
         }
+        nameFood = getView().findViewById(R.id.food_name);
+        price_food = getView().findViewById(R.id.price_food);
+        quantitySold = getView().findViewById(R.id.quantitySold);
+        imageView = getView().findViewById(R.id.img_food);
+
 
         // 🔹 Tìm LinearLayout toppingContainer để thêm toppings vào
         toppingContainer = view.findViewById(R.id.toppingContainer);
@@ -63,11 +76,37 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
 
         // 🔹 Gọi API để lấy danh sách toppings
         fetchToppings();
+        fetchFoodDetails();
+        // 🔹 Sự kiện click cho "Thêm vào giỏ hàng"
 
-        // 🔹 Sự kiện click cho "Thêm vào giỏ hàng" (chỉ hiển thị thông báo)
+        // 🔹 lấy dữ liệu từ nút này truyền qua giỏ hàng nè chó Khoa
         btnAddToCart.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+            if (getView() == null) return;
+            // 🔹 Lấy thông tin món ăn
+            String name = nameFood.getText().toString();
+            String price = price_food.getText().toString();
+            String quantity = quantitySold.getText().toString();
+            String imageUrl = (String) imageView.getTag();
+            // 🔹 Lấy danh sách topping đã chọn
+            StringBuilder selectedToppings = new StringBuilder();
+            for (int i = 0; i < toppingContainer.getChildCount(); i++) {
+                View child = toppingContainer.getChildAt(i);
+                if (child instanceof CheckBox) {
+                    CheckBox checkBox = (CheckBox) child;
+                    if (checkBox.isChecked()) {
+                        selectedToppings.append(checkBox.getText().toString()).append(", ");
+                    }
+                }
+            }
+            Log.d("CartItem", "Món ăn: " + name);
+            Log.d("CartItem", "Giá: " + price);
+            Log.d("CartItem", "Số lượng: " + quantity);
+            Log.d("CartItem", "Ảnh: " + imageUrl);
+            Log.d("CartItem", "Toppings đã chọn: " + (selectedToppings.length() > 0 ? selectedToppings.toString() : "Không có"));
+            Toast.makeText(getContext(), "Đã log thông tin món ăn", Toast.LENGTH_SHORT).show();
         });
+
+
     }
 
     @Override
@@ -114,7 +153,7 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
 
                     CheckBox checkBox = new CheckBox(getContext());
                     checkBox.setText(name + " - " + price + "đ");
-                    checkBox.setTextSize(16);
+                    checkBox.setTextSize(20);
                     checkBox.setPadding(10, 10, 10, 10);
 
                     toppingContainer.addView(checkBox); // 🔹 Thêm CheckBox vào danh sách toppings
@@ -128,4 +167,61 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
             }
         });
     }
+    /**
+     * 🔹 Gọi Firestore để lấy thông tin của món ăn dựa trên foodId
+     */
+    /**
+     * 🔹 Lấy thông tin món ăn trực tiếp từ Firestore mà không cần gọi `getFoodDetails()`
+     */
+    private void fetchFoodDetails() {
+        Log.d(TAG, "Fetching food details for ID: " + foodId);
+
+        restaurantManagement.getDishes(restaurantId, categoryId, new RestaurantManagement.DishCallback() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> dishList) {
+                for (Map<String, Object> dish : dishList) {
+                    if (dish.get("id").equals(foodId)) {
+                        Log.d(TAG, "✅ Tìm thấy món ăn: " + dish.get("name"));
+
+                        if (getView() == null) {
+                            Log.e(TAG, "🚨 View chưa được khởi tạo!");
+                            return;
+                        }
+
+
+                        if (nameFood == null || price_food == null || imageView == null) {
+                            Log.e(TAG, "🚨 Một trong các view chưa được tìm thấy!");
+                            return;
+                        }
+
+                        getActivity().runOnUiThread(() -> {
+                            nameFood.setText((String) dish.get("name"));
+                            price_food.setText(dish.get("price") + "đ");
+                            Object quantitySoldValue = dish.get("quantitySold");
+                            String quantitySoldText = (quantitySoldValue != null) ? quantitySoldValue + " phần đã bán" : "0 phần đã bán";
+                            quantitySold.setText(quantitySoldText);
+                            Glide.with(requireContext())
+                                    .load((String) dish.get("image"))
+                                    .error(R.mipmap.ic_launcher)
+                                    .placeholder(R.mipmap.ic_launcher)
+                                    .into(imageView);
+
+                            // 🔹 Gán URL ảnh vào Tag của imageView
+                            imageView.setTag((String) dish.get("image"));
+
+                        });
+
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, "🚨 Lỗi khi lấy danh sách món ăn: ", e);
+                Toast.makeText(getContext(), "Lỗi khi lấy thông tin món ăn!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

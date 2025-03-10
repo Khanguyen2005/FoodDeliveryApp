@@ -152,7 +152,7 @@
                 android:fillViewport="true">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcvOut"
+                    android:id="@+id/rcvOutstanding"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </androidx.core.widget.NestedScrollView>

@@ -4,9 +4,10 @@ import java.io.Serializable;
 
 public class Food implements Serializable {
     private String id;
-    private Number price,quantitySold;
+    private Number price;
+    private int quantitySold;
     private String name,imgUrl,description;
-    public Food(String id, String name, Number quantitySold, Number price, String imgUrl, String description){
+    public Food(String id, String name, int quantitySold, Number price, String imgUrl, String description){
         this.id = id;
         this.name = name;
         this.quantitySold = quantitySold;
@@ -23,11 +24,11 @@ public class Food implements Serializable {
         this.id = id;
     }
 
-    public Number getQuantitySold() {
+    public int getQuantitySold() {
         return quantitySold;
     }
 
-    public void setQuantitySold(Number quantitySold) {
+    public void setQuantitySold(int quantitySold) {
         this.quantitySold = quantitySold;
     }
 

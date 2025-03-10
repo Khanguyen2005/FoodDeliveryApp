@@ -14,7 +14,7 @@ public class ConvertData {
         for (Map<String, Object> dish : dishList) {
             String id = (String) dish.get("id");
             String name = (String) dish.get("name");
-            double quantitySold = dish.get("quantitySold") != null ? ((Long) dish.get("quantitySold")).intValue() : 0;
+            int quantitySold = dish.get("quantitySold") != null ? ((Long) dish.get("quantitySold")).intValue() : 0;
             double price = dish.get("price") != null ? ((Number) dish.get("price")).doubleValue() : 0.0;
             String description = (String) dish.get("description");
             String imgUrl = (String) dish.get("image");

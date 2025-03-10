@@ -2,7 +2,8 @@ package Fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-
+import android.animation.ObjectAnimator;
+import android.view.animation.DecelerateInterpolator;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +33,8 @@ import Adapter.Category;
 import Adapter.CategoryAdapter;
 import Adapter.Food;
 import Adapter.FoodAdapter;
+import Adapter.Outstanding;
+import Adapter.OutstandingAdapter;
 import JSON.ConvertData;
 
 public class RestaurantDetailFragment extends Fragment {
@@ -45,6 +48,9 @@ public class RestaurantDetailFragment extends Fragment {
     private TextView txtName, txtStar, txtEvaluate;
     private ImageView imgRestaurant, imgBackground;
     private List<Category> listCate = new ArrayList<>();
+    private RecyclerView rcvOutstanding;
+    private OutstandingAdapter outstandingAdapter;
+    private List<Outstanding> listOutstanding = new ArrayList<>();
 
     private static final String ARG_ID = "id";
     private static final String ARG_NAME = "name";
@@ -172,7 +178,13 @@ public class RestaurantDetailFragment extends Fragment {
 
         if (targetView != null) {
             int scrollY = targetView.getTop() + rcvCate.getTop();
-            scrollView.post(() -> scrollView.smoothScrollTo(0, scrollY));
+
+            scrollView.post(() -> {
+                ObjectAnimator animator = ObjectAnimator.ofInt(scrollView, "scrollY", scrollY);
+                animator.setDuration(800);
+                animator.setInterpolator(new DecelerateInterpolator());
+                animator.start();
+            });
         }
     }
 
@@ -215,7 +227,6 @@ public class RestaurantDetailFragment extends Fragment {
             }
         });
     }
-
 
 }
 
