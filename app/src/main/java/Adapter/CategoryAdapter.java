@@ -21,14 +21,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     private Context context;
     private List<Category> listCate;
     private OnFoodClickListener foodClickListener;
+    private String restaurantId;
 
     public void setOnFoodClickListener(OnFoodClickListener listener) {
         this.foodClickListener = listener;
     }
 
-    public CategoryAdapter(Context context, List<Category> listCate){
+    public CategoryAdapter(Context context, List<Category> listCate, String restaurantId){
         this.context = context;
         this.listCate = listCate;
+        this.restaurantId = restaurantId;
     }
     public void setData(List<Category> listCate){
         this.listCate = listCate;
@@ -54,7 +56,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         if (foodList == null) {
             foodList = new ArrayList<>();
         }
-        FoodAdapter foodAdapter = new FoodAdapter(holder.itemView.getContext(), category.getId());
+        FoodAdapter foodAdapter = new FoodAdapter(holder.itemView.getContext(), category.getId(), restaurantId);
         foodAdapter.setData(foodList);
 
 
