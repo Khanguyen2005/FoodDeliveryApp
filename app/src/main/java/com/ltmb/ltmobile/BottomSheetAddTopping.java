@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.CheckBox; // 🔹 Thêm import CheckBox để tạo danh sách toppings
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,8 +21,12 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +81,7 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
         restaurantManagement = new RestaurantManagement();
 
         // 🔹 Gọi API để lấy danh sách toppings
+//        fetchToppings();
         fetchToppings();
         fetchFoodDetails();
         // 🔹 Sự kiện click cho "Thêm vào giỏ hàng"
@@ -133,40 +140,40 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
     /**
      * 🔹 Gọi Firestore để lấy danh sách toppings và hiển thị trên BottomSheet.
      */
-    private void fetchToppings() {
-        Log.d(TAG, "Fetching toppings for Restaurant ID: " + restaurantId + ", Category ID: " + categoryId);
-
-        restaurantManagement.getToppings(restaurantId, categoryId, new RestaurantManagement.ToppingCallback() {
-            @Override
-            public void onSuccess(List<Map<String, Object>> toppingList) {
-                if (toppingList.isEmpty()) {
-                    Log.d(TAG, "⚠️ Không tìm thấy dữ liệu toppings!");
-                    return;
-                }
-
-                Log.d(TAG, "✅ Toppings retrieved successfully! Tổng số toppings: " + toppingList.size());
-
-                // 🔹 Hiển thị toppings trong BottomSheet dưới dạng CheckBox
-                for (Map<String, Object> topping : toppingList) {
-                    String name = (String) topping.get("name");
-                    Long price = (Long) topping.get("price");
-
-                    CheckBox checkBox = new CheckBox(getContext());
-                    checkBox.setText(name + " - " + price + "đ");
-                    checkBox.setTextSize(20);
-                    checkBox.setPadding(10, 10, 10, 10);
-
-                    toppingContainer.addView(checkBox); // 🔹 Thêm CheckBox vào danh sách toppings
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Log.e(TAG, "🚨 Error fetching toppings: " + e.getMessage(), e);
-                Toast.makeText(getContext(), "Lỗi khi lấy toppings!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+//    private void fetchToppings() {
+//        Log.d(TAG, "Fetching toppings for Restaurant ID: " + restaurantId + ", Category ID: " + categoryId);
+//
+//        restaurantManagement.getToppings(restaurantId, categoryId, new RestaurantManagement.ToppingCallback() {
+//            @Override
+//            public void onSuccess(List<Map<String, Object>> toppingList) {
+//                if (toppingList.isEmpty()) {
+//                    Log.d(TAG, "⚠️ Không tìm thấy dữ liệu toppings!");
+//                    return;
+//                }
+//
+//                Log.d(TAG, "✅ Toppings retrieved successfully! Tổng số toppings: " + toppingList.size());
+//
+//                // 🔹 Hiển thị toppings trong BottomSheet dưới dạng CheckBox
+//                for (Map<String, Object> topping : toppingList) {
+//                    String name = (String) topping.get("name");
+//                    Long price = (Long) topping.get("price");
+//
+//                    CheckBox checkBox = new CheckBox(getContext());
+//                    checkBox.setText(name + " - " + price + "đ");
+//                    checkBox.setTextSize(20);
+//                    checkBox.setPadding(10, 10, 10, 10);
+//
+//                    toppingContainer.addView(checkBox); // 🔹 Thêm CheckBox vào danh sách toppings
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Exception e) {
+//                Log.e(TAG, "🚨 Error fetching toppings: " + e.getMessage(), e);
+//                Toast.makeText(getContext(), "Lỗi khi lấy toppings!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
     /**
      * 🔹 Gọi Firestore để lấy thông tin của món ăn dựa trên foodId
      */
@@ -223,5 +230,96 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
             }
         });
     }
+    public void fetchToppings() {
+        Log.d(TAG, "Fetching toppings for Restaurant ID: " + restaurantId + ", Category ID: " + categoryId);
+
+        restaurantManagement.getAllToppings(restaurantId, categoryId, new RestaurantManagement.ToppingCallback() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> toppingList) {
+                if (getActivity() == null) return; // Tránh crash nếu Activity bị đóng
+
+                getActivity().runOnUiThread(() -> {
+                    toppingContainer.removeAllViews();
+
+                    if (toppingList.isEmpty()) {
+                        Log.d(TAG, "⚠️ Không có toppings nào!");
+                        return;
+                    }
+
+                    for (Map<String, Object> toppingData : toppingList) {
+                        String toppingName = (String) toppingData.get("name");
+                        int min = 0, max = 1;
+                        try {
+                            if (toppingData.containsKey("min")) {
+                                min = Integer.parseInt(String.valueOf(toppingData.get("min")));
+                            }
+                            if (toppingData.containsKey("max")) {
+                                max = Integer.parseInt(String.valueOf(toppingData.get("max")));
+                            }
+                        } catch (NumberFormatException e) {
+                            Log.e(TAG, "🚨 Lỗi ép kiểu min/max: " + e.getMessage());
+                        }
+
+                        // **Final copy để sử dụng trong lambda**
+                        final int finalMax = max;
+
+                        // **Tiêu đề nhóm toppings**
+                        TextView sectionTitle = new TextView(getContext());
+                        sectionTitle.setText(toppingName + " (Chọn " + min + " - " + finalMax + ")");
+                        sectionTitle.setTextSize(16);
+                        sectionTitle.setTextColor(getResources().getColor(R.color.black));
+                        sectionTitle.setPadding(10, 20, 10, 10);
+                        sectionTitle.setBackgroundColor(getResources().getColor(R.color.light_gray)); // Màu nền nhẹ
+                        toppingContainer.addView(sectionTitle);
+
+                        // **Danh sách các toppings (luôn dùng CheckBox)**
+                        List<CheckBox> checkBoxList = new ArrayList<>();
+
+                        List<Map<String, Object>> items = (List<Map<String, Object>>) toppingData.get("items");
+                        if (items != null) {
+                            for (Map<String, Object> itemData : items) {
+                                String itemName = (String) itemData.get("name");
+                                Long itemPrice = (Long) itemData.get("price");
+
+                                CheckBox checkBox = new CheckBox(getContext());
+                                checkBox.setText(itemName + (itemPrice != null && itemPrice > 0 ? " - " + itemPrice + "đ" : " - Miễn phí"));
+                                checkBox.setTextSize(14);
+                                checkBox.setTextColor(getResources().getColor(R.color.black));
+
+                                // Thêm CheckBox vào danh sách
+                                checkBoxList.add(checkBox);
+                                toppingContainer.addView(checkBox);
+                            }
+                        }
+
+                        // **Giới hạn chọn toppings theo max**
+                        for (CheckBox checkBox : checkBoxList) {
+                            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                long selectedCount = checkBoxList.stream().filter(CheckBox::isChecked).count();
+
+                                // Nếu đạt max, vô hiệu hóa các CheckBox chưa chọn
+                                boolean disableUnchecked = selectedCount >= finalMax;
+                                for (CheckBox cb : checkBoxList) {
+                                    if (!cb.isChecked()) {
+                                        cb.setEnabled(!disableUnchecked);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, "🚨 Lỗi khi lấy danh sách toppings: ", e);
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(getContext(), "Lỗi khi lấy toppings!", Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
+    }
+
 
 }

@@ -9,6 +9,7 @@ import android.view.animation.DecelerateInterpolator;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -122,6 +123,18 @@ public class RestaurantDetailFragment extends Fragment {
         txtName.setText(name);
         txtStar.setText(String.format("⭐ %.1f", star)); // Hiển thị 1 số thập phân
         txtEvaluate.setText(String.format("%.0f đánh giá", evaluate)); // Hiển thị số nguyên
+        txtEvaluate.setOnClickListener(v -> {
+            // Tạo một instance của ReviewFragment
+            ReviewFragment reviewFragment = new ReviewFragment();
+
+            // Lấy FragmentManager để bắt đầu giao dịch
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+
+            // Thay thế fragment hiện tại bằng ReviewFragment và thêm vào back stack
+            transaction.replace(R.id.frame_layout_res, reviewFragment);
+            transaction.addToBackStack(null); // Cho phép quay lại fragment trước đó
+            transaction.commit();
+        });
 
         btnBack.setOnClickListener(v -> {
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {

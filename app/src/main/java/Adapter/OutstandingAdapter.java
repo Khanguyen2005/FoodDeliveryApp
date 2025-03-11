@@ -28,7 +28,6 @@ public class OutstandingAdapter extends RecyclerView.Adapter<OutstandingAdapter.
         if (listOut == null) return;
 
         listOut.sort((o1, o2) -> Integer.compare(o2.getQuantitySold(), o1.getQuantitySold()));
-        // Chỉ lấy top 5 món ăn
         this.listOut = listOut.subList(0, Math.min(5, listOut.size()));
         notifyDataSetChanged();
     }
@@ -52,6 +51,12 @@ public class OutstandingAdapter extends RecyclerView.Adapter<OutstandingAdapter.
         holder.rank.setText(out.getRank());
         DecimalFormat formatter = new DecimalFormat("#,###");
         holder.price.setText(formatter.format(out.getPrice()) + " đ");
+        if (out.getQuantitySold() != 0) {
+            holder.quantitySold.setText(String.format("Đã bán: %d", out.getQuantitySold()));
+        } else {
+            holder.quantitySold.setText("Đã bán: 0");
+        }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +77,7 @@ public class OutstandingAdapter extends RecyclerView.Adapter<OutstandingAdapter.
     public class OutstandingViewHodle extends RecyclerView.ViewHolder{
 
         private ImageView imgOut;
-        private TextView nameFood,price,rank;
+        private TextView nameFood,price,rank,quantitySold;
         public OutstandingViewHodle(@NonNull View itemView) {
             super(itemView);
 
@@ -80,6 +85,7 @@ public class OutstandingAdapter extends RecyclerView.Adapter<OutstandingAdapter.
             nameFood = itemView.findViewById(R.id.nameFood);
             price = itemView.findViewById(R.id.price);
             rank = itemView.findViewById(R.id.rank);
+            quantitySold = itemView.findViewById(R.id.quantitySold);
         }
     }
 }
