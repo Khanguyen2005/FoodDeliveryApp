@@ -1,7 +1,5 @@
 package com.ltmb.ltmobile.services;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -199,8 +197,7 @@ public class RestaurantManagement {
         void onFailure(Exception e);
     }
 
-    public void getToppings(String restaurantId, String categoryId, final ToppingCallback callback) {
-
+    public void getAllToppings(String restaurantId, String categoryId, final ToppingCallback callback) {
         CollectionReference toppingRef = db.collection("Restaurants")
                 .document(restaurantId)
                 .collection("menu")
@@ -211,22 +208,49 @@ public class RestaurantManagement {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    List<Map<String, Object>> toppingList = new ArrayList<>();
+                    List<Map<String, Object>> categoryToppingList = new ArrayList<>();
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Map<String, Object> toppingData = new HashMap<>();
-                        toppingData.put("name", document.getString("name"));
-                        toppingData.put("price", document.getLong("price"));
-                        toppingList.add(toppingData);
+                        Map<String, Object> data = document.getData();
+                        Map<String, Object> categoryTopping = new HashMap<>();
+
+                        // Lấy thông tin chung của category topping
+                        if (data.containsKey("min")) {
+                            categoryTopping.put("min", data.get("min"));
+                        }
+                        if (data.containsKey("max")) {
+                            categoryTopping.put("max", data.get("max"));
+                        }
+                        if (data.containsKey("name")) {
+                            categoryTopping.put("name", data.get("name"));
+                        }
+
+                        // Lấy danh sách tất cả các items trong category topping
+                        List<Map<String, Object>> items = new ArrayList<>();
+                        for (Map.Entry<String, Object> entry : data.entrySet()) {
+                            if (entry.getKey().startsWith("item") && entry.getValue() instanceof Map) {
+                                Map<String, Object> itemData = (Map<String, Object>) entry.getValue();
+                                Map<String, Object> item = new HashMap<>();
+                                item.put("name", itemData.get("name"));
+                                item.put("price", itemData.get("price"));
+                                items.add(item);
+                            }
+                        }
+
+                        if (!items.isEmpty()) {
+                            categoryTopping.put("items", items);
+                        }
+                        categoryToppingList.add(categoryTopping);
                     }
 
-                    // Trả kết quả qua callback
-                    callback.onSuccess(toppingList);
+                    callback.onSuccess(categoryToppingList);
                 } else {
                     callback.onFailure(task.getException());
                 }
             }
         });
     }
+
+
 
 }
