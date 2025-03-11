@@ -342,6 +342,7 @@
 
                                 <!-- Chữ bên cạnh ảnh -->
                                 <TextView
+                                    android:id="@+id/txtTest"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="8dp"

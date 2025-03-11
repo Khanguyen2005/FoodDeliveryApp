@@ -74,6 +74,21 @@ public class HomeFragment extends Fragment {
         layoutSnack.setOnClickListener(v -> openCategory(Arrays.asList("Ăn vặt","bánh tráng", "trà sữa", "tea")));
         layoutMilkTea.setOnClickListener(v -> openCategory(Arrays.asList("trà sữa", "trà", "cà phê", "tea")));
 
+
+        TextView txtTest = view.findViewById(R.id.txtTest);
+
+        txtTest.setOnClickListener(v -> {
+            // Tạo một instance của Fragment mới
+            RestaurantReviewsFragment reviewListFragment = new RestaurantReviewsFragment();
+
+            // Thực hiện chuyển đổi Fragment
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.frame_layout, reviewListFragment) // ID của container chứa Fragment
+                    .addToBackStack(null) // Cho phép quay lại Fragment trước đó
+                    .commit();
+        });
+
+
         return view;
     }
     private void openCategory(List<String> keywords) {
