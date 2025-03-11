@@ -280,27 +280,33 @@ public class RestaurantDetailFragment extends Fragment {
                 .collection("menu");
 
         menuRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                List<Map<String, Object>> topDishList = new ArrayList<>();
+            if (task.isSuccessful() && task.getResult() != null) {
+                List<Map<String, Object>> allDishes = new ArrayList<>();
                 List<Task<QuerySnapshot>> dishTasks = new ArrayList<>();
+                List<String> categoryIds = new ArrayList<>(); // Lưu danh sách categoryId tránh lỗi index
 
-                // Lặp qua tất cả danh mục để lấy món ăn trong từng danh mục
+                // Lặp qua tất cả danh mục để lấy tất cả món ăn
                 for (QueryDocumentSnapshot categoryDoc : task.getResult()) {
-                    String categoryId = categoryDoc.getId(); // Anh Khá Thêm: Lấy categoryId
+                    String categoryId = categoryDoc.getId();
+                    categoryIds.add(categoryId); // Lưu categoryId vào danh sách
                     CollectionReference dishRef = menuRef.document(categoryId).collection("menu");
 
-                    Task<QuerySnapshot> dishTask = dishRef.orderBy("quantitySold", Query.Direction.DESCENDING)
-                            .limit(5) // Giới hạn 5 món theo từng danh mục
-                            .get();
-
+                    Task<QuerySnapshot> dishTask = dishRef.get();
                     dishTasks.add(dishTask);
+                }
+
+                if (dishTasks.isEmpty()) {
+                    callback.onSuccess(new ArrayList<>()); // Trả về danh sách rỗng nếu không có món
+                    return;
                 }
 
                 // Chạy tất cả truy vấn món ăn song song
                 Tasks.whenAllSuccess(dishTasks).addOnSuccessListener(results -> {
                     for (int i = 0; i < results.size(); i++) {
+                        if (i >= categoryIds.size()) continue; // Tránh lỗi index
+
                         QuerySnapshot snapshot = (QuerySnapshot) results.get(i);
-                        String categoryId = task.getResult().getDocuments().get(i).getId(); // Anh Khá Thêm: Lấy categoryId
+                        String categoryId = categoryIds.get(i);
 
                         for (QueryDocumentSnapshot document : snapshot) {
                             Map<String, Object> dishData = new HashMap<>();
@@ -309,27 +315,46 @@ public class RestaurantDetailFragment extends Fragment {
                             dishData.put("description", document.getString("description"));
                             dishData.put("price", document.getDouble("price"));
                             dishData.put("image", document.getString("image"));
-                            dishData.put("quantitySold", document.getLong("quantitySold"));
-                            dishData.put("rank", "Top #" + (topDishList.size() + 1));
-                            dishData.put("restaurantId", restaurantId); // Anh Khá Thêm
-                            dishData.put("categoryId", categoryId); // Anh Khá Thêm
 
-                            topDishList.add(dishData);
+                            // Kiểm tra null tránh lỗi
+                            Long quantitySold = document.getLong("quantitySold");
+                            dishData.put("quantitySold", (quantitySold != null) ? quantitySold : 0L);
+
+                            dishData.put("restaurantId", restaurantId);
+                            dishData.put("categoryId", categoryId);
+                            dishData.put("rank", "Top #?"); // Tạm thời, cập nhật sau
+
+                            allDishes.add(dishData);
                         }
                     }
 
-                    // Giới hạn danh sách còn tối đa 5 món
-                    List<Map<String, Object>> finalTopDishes = topDishList.subList(0, Math.min(5, topDishList.size()));
+                    if (allDishes.isEmpty()) {
+                        callback.onSuccess(new ArrayList<>()); // Nếu không có món, trả về danh sách rỗng
+                        return;
+                    }
 
-                    callback.onSuccess(finalTopDishes);
+                    // Sắp xếp danh sách theo quantitySold giảm dần, kiểm tra null
+                    allDishes.sort((dish1, dish2) -> {
+                        Long q1 = (Long) dish1.get("quantitySold");
+                        Long q2 = (Long) dish2.get("quantitySold");
+                        return Long.compare(q2, q1); // Sắp xếp giảm dần
+                    });
+
+                    // Cập nhật rank
+                    for (int i = 0; i < allDishes.size(); i++) {
+                        allDishes.get(i).put("rank", "Top #" + (i + 1));
+                    }
+
+                    // Giới hạn danh sách còn tối đa 5 món
+                    List<Map<String, Object>> topDishes = allDishes.subList(0, Math.min(5, allDishes.size()));
+
+                    callback.onSuccess(topDishes);
                 }).addOnFailureListener(callback::onFailure);
             } else {
                 callback.onFailure(task.getException());
             }
         });
     }
-
-
 
 
 }
