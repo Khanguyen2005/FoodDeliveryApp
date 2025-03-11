@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="150dp"
-    android:layout_height="240dp"
+    android:layout_height="265dp"
     android:layout_marginHorizontal="5dp"
     android:layout_marginVertical="10dp"
     android:orientation="vertical">
@@ -50,6 +50,15 @@
         android:ellipsize="end"
         android:textColor="@color/black"
         android:text="Gà rán sốt cay"/>
+    <TextView
+        android:id="@+id/quantitySold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textSize="16sp"
+        android:ellipsize="end"
+        android:textColor="@color/black"
+        android:text="0 phần đã bán"/>
     <TextView
         android:id="@+id/price"
         android:layout_width="wrap_content"

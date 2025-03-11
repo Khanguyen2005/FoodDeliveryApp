@@ -75,7 +75,7 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
         restaurantManagement = new RestaurantManagement();
 
         // 🔹 Gọi API để lấy danh sách toppings
-        fetchToppings();
+//        fetchToppings();
         fetchFoodDetails();
         // 🔹 Sự kiện click cho "Thêm vào giỏ hàng"
 
@@ -133,40 +133,40 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
     /**
      * 🔹 Gọi Firestore để lấy danh sách toppings và hiển thị trên BottomSheet.
      */
-    private void fetchToppings() {
-        Log.d(TAG, "Fetching toppings for Restaurant ID: " + restaurantId + ", Category ID: " + categoryId);
-
-        restaurantManagement.getToppings(restaurantId, categoryId, new RestaurantManagement.ToppingCallback() {
-            @Override
-            public void onSuccess(List<Map<String, Object>> toppingList) {
-                if (toppingList.isEmpty()) {
-                    Log.d(TAG, "⚠️ Không tìm thấy dữ liệu toppings!");
-                    return;
-                }
-
-                Log.d(TAG, "✅ Toppings retrieved successfully! Tổng số toppings: " + toppingList.size());
-
-                // 🔹 Hiển thị toppings trong BottomSheet dưới dạng CheckBox
-                for (Map<String, Object> topping : toppingList) {
-                    String name = (String) topping.get("name");
-                    Long price = (Long) topping.get("price");
-
-                    CheckBox checkBox = new CheckBox(getContext());
-                    checkBox.setText(name + " - " + price + "đ");
-                    checkBox.setTextSize(20);
-                    checkBox.setPadding(10, 10, 10, 10);
-
-                    toppingContainer.addView(checkBox); // 🔹 Thêm CheckBox vào danh sách toppings
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Log.e(TAG, "🚨 Error fetching toppings: " + e.getMessage(), e);
-                Toast.makeText(getContext(), "Lỗi khi lấy toppings!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+//    private void fetchToppings() {
+//        Log.d(TAG, "Fetching toppings for Restaurant ID: " + restaurantId + ", Category ID: " + categoryId);
+//
+//        restaurantManagement.getToppings(restaurantId, categoryId, new RestaurantManagement.ToppingCallback() {
+//            @Override
+//            public void onSuccess(List<Map<String, Object>> toppingList) {
+//                if (toppingList.isEmpty()) {
+//                    Log.d(TAG, "⚠️ Không tìm thấy dữ liệu toppings!");
+//                    return;
+//                }
+//
+//                Log.d(TAG, "✅ Toppings retrieved successfully! Tổng số toppings: " + toppingList.size());
+//
+//                // 🔹 Hiển thị toppings trong BottomSheet dưới dạng CheckBox
+//                for (Map<String, Object> topping : toppingList) {
+//                    String name = (String) topping.get("name");
+//                    Long price = (Long) topping.get("price");
+//
+//                    CheckBox checkBox = new CheckBox(getContext());
+//                    checkBox.setText(name + " - " + price + "đ");
+//                    checkBox.setTextSize(20);
+//                    checkBox.setPadding(10, 10, 10, 10);
+//
+//                    toppingContainer.addView(checkBox); // 🔹 Thêm CheckBox vào danh sách toppings
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Exception e) {
+//                Log.e(TAG, "🚨 Error fetching toppings: " + e.getMessage(), e);
+//                Toast.makeText(getContext(), "Lỗi khi lấy toppings!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
     /**
      * 🔹 Gọi Firestore để lấy thông tin của món ăn dựa trên foodId
      */
