@@ -260,50 +260,51 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
                             Log.e(TAG, "🚨 Lỗi ép kiểu min/max: " + e.getMessage());
                         }
 
+                        // **Final copy để sử dụng trong lambda**
+                        final int finalMax = max;
+
                         // **Tiêu đề nhóm toppings**
                         TextView sectionTitle = new TextView(getContext());
-                        sectionTitle.setText(toppingName + " (Chọn " + min + " - " + max + ")");
+                        sectionTitle.setText(toppingName + " (Chọn " + min + " - " + finalMax + ")");
                         sectionTitle.setTextSize(16);
                         sectionTitle.setTextColor(getResources().getColor(R.color.black));
                         sectionTitle.setPadding(10, 20, 10, 10);
                         sectionTitle.setBackgroundColor(getResources().getColor(R.color.light_gray)); // Màu nền nhẹ
                         toppingContainer.addView(sectionTitle);
 
-                        // **Hiển thị danh sách các items trong nhóm topping**
-                        if (max == 1) {
-                            // Nếu chỉ được chọn 1 -> Dùng RadioGroup
-                            RadioGroup radioGroup = new RadioGroup(getContext());
-                            radioGroup.setOrientation(RadioGroup.VERTICAL);
+                        // **Danh sách các toppings (luôn dùng CheckBox)**
+                        List<CheckBox> checkBoxList = new ArrayList<>();
 
-                            List<Map<String, Object>> items = (List<Map<String, Object>>) toppingData.get("items");
-                            if (items != null) {
-                                for (Map<String, Object> itemData : items) {
-                                    String itemName = (String) itemData.get("name");
-                                    Long itemPrice = (Long) itemData.get("price");
+                        List<Map<String, Object>> items = (List<Map<String, Object>>) toppingData.get("items");
+                        if (items != null) {
+                            for (Map<String, Object> itemData : items) {
+                                String itemName = (String) itemData.get("name");
+                                Long itemPrice = (Long) itemData.get("price");
 
-                                    RadioButton radioButton = new RadioButton(getContext());
-                                    radioButton.setText(itemName + (itemPrice != null && itemPrice > 0 ? " - " + itemPrice + "đ" : " - Miễn phí"));
-                                    radioButton.setTextSize(14);
-                                    radioButton.setTextColor(getResources().getColor(R.color.black));
-                                    radioGroup.addView(radioButton);
-                                }
+                                CheckBox checkBox = new CheckBox(getContext());
+                                checkBox.setText(itemName + (itemPrice != null && itemPrice > 0 ? " - " + itemPrice + "đ" : " - Miễn phí"));
+                                checkBox.setTextSize(14);
+                                checkBox.setTextColor(getResources().getColor(R.color.black));
+
+                                // Thêm CheckBox vào danh sách
+                                checkBoxList.add(checkBox);
+                                toppingContainer.addView(checkBox);
                             }
-                            toppingContainer.addView(radioGroup);
-                        } else {
-                            // Nếu có thể chọn nhiều -> Dùng CheckBox
-                            List<Map<String, Object>> items = (List<Map<String, Object>>) toppingData.get("items");
-                            if (items != null) {
-                                for (Map<String, Object> itemData : items) {
-                                    String itemName = (String) itemData.get("name");
-                                    Long itemPrice = (Long) itemData.get("price");
+                        }
 
-                                    CheckBox checkBox = new CheckBox(getContext());
-                                    checkBox.setText(itemName + (itemPrice != null && itemPrice > 0 ? " - " + itemPrice + "đ" : " - Miễn phí"));
-                                    checkBox.setTextSize(14);
-                                    checkBox.setTextColor(getResources().getColor(R.color.black));
-                                    toppingContainer.addView(checkBox);
+                        // **Giới hạn chọn toppings theo max**
+                        for (CheckBox checkBox : checkBoxList) {
+                            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                long selectedCount = checkBoxList.stream().filter(CheckBox::isChecked).count();
+
+                                // Nếu đạt max, vô hiệu hóa các CheckBox chưa chọn
+                                boolean disableUnchecked = selectedCount >= finalMax;
+                                for (CheckBox cb : checkBoxList) {
+                                    if (!cb.isChecked()) {
+                                        cb.setEnabled(!disableUnchecked);
+                                    }
                                 }
-                            }
+                            });
                         }
                     }
                 });
@@ -319,5 +320,6 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
             }
         });
     }
+
 
 }
