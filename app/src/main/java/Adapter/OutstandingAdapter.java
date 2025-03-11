@@ -10,8 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.ltmb.ltmobile.R;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class OutstandingAdapter extends RecyclerView.Adapter<OutstandingAdapter.OutstandingViewHodle> {
@@ -21,7 +23,11 @@ public class OutstandingAdapter extends RecyclerView.Adapter<OutstandingAdapter.
         this.context = context;
     }
     public void setData(List<Outstanding> listOut){
-        this.listOut = listOut;
+        if (listOut == null) return;
+
+        listOut.sort((o1, o2) -> Integer.compare(o2.getQuantitySold(), o1.getQuantitySold()));
+        // Chỉ lấy top 5 món ăn
+        this.listOut = listOut.subList(0, Math.min(5, listOut.size()));
         notifyDataSetChanged();
     }
     @NonNull
@@ -35,10 +41,17 @@ public class OutstandingAdapter extends RecyclerView.Adapter<OutstandingAdapter.
     public void onBindViewHolder(@NonNull OutstandingViewHodle holder, int position) {
         Outstanding out = listOut.get(position);
         if(out == null) return;
-        holder.imgOut.setImageResource(out.getId());
+        Glide.with(holder.itemView.getContext())
+                .load(out.getImage())
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.mipmap.ic_launcher)
+                .into(holder.imgOut);
         holder.nameFood.setText(out.getNameFood());
         holder.rank.setText(out.getRank());
-        holder.price.setText(out.getPrice());
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        holder.price.setText(formatter.format(out.getPrice()) + " đ");
+
+
     }
 
     @Override

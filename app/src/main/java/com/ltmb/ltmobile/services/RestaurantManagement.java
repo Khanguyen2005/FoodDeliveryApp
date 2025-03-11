@@ -136,6 +136,7 @@ public class RestaurantManagement {
                         dishData.put("description", document.getString("description")); // Mô tả món ăn
                         dishData.put("price", document.getLong("price")); // Giá món ăn
                         dishData.put("image", document.getString("image")); // Ảnh món ăn
+                        dishData.put("quantitySold", document.getLong("quantitySold")); // Lượt bán
                         dishList.add(dishData);
                     }
 

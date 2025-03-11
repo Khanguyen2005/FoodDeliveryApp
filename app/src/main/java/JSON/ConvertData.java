@@ -6,6 +6,7 @@ import java.util.Map;
 
 import Adapter.Category;
 import Adapter.Food;
+import Adapter.Outstanding;
 import Adapter.Restaurant;
 
 public class ConvertData {
@@ -24,6 +25,22 @@ public class ConvertData {
         }
         return foodList;
     }
+    public static List<Outstanding> convertToOutstandingList(List<Map<String, Object>> dishList) {
+        List<Outstanding> outstandingsList = new ArrayList<>();
+        for (Map<String, Object> dish : dishList) {
+            String id = (String) dish.get("id");
+            String name = (String) dish.get("name");
+            int quantitySold = dish.get("quantitySold") != null ? ((Long) dish.get("quantitySold")).intValue() : 0;
+            double price = dish.get("price") != null ? ((Number) dish.get("price")).doubleValue() : 0.0;
+            String imgUrl = (String) dish.get("image");
+            String rank = (String) dish.get("rank");
+
+            Outstanding outstanding = new Outstanding(id, rank, name, price, imgUrl, quantitySold);
+            outstandingsList.add(outstanding);
+        }
+        return outstandingsList;
+    }
+
     public static List<Category> convertToCategoryList(List<Map<String, Object>> categoryList) {
         List<Category> categories = new ArrayList<>();
         for (Map<String, Object> categoryData : categoryList) {

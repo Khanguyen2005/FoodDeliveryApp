@@ -18,6 +18,7 @@ import com.ltmb.ltmobile.BottomSheetAddTopping;
 import com.ltmb.ltmobile.R;
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -104,11 +105,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         }
 
 
-        if (food.getPrice() instanceof Number) {
-            holder.price.setText(String.valueOf(((Number) food.getPrice()).longValue()));
-        } else {
-            holder.price.setText("0");
-        }
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        holder.price.setText(formatter.format(food.getPrice()) + " đ");
 
     }
 

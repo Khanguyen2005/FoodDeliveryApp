@@ -3,7 +3,10 @@ package Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.animation.ObjectAnimator;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,12 +23,21 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.ltmb.ltmobile.BottomSheetAddTopping;
 import com.ltmb.ltmobile.R;
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +50,7 @@ import Adapter.OutstandingAdapter;
 import JSON.ConvertData;
 
 public class RestaurantDetailFragment extends Fragment {
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private RecyclerView rcvCate;
     private String restaurantId, name, imageUrl, backgroundImage;
     private double star, evaluate;
@@ -127,6 +140,11 @@ public class RestaurantDetailFragment extends Fragment {
         rcvCate.setAdapter(categoryAdapter);
         rcvCate.setNestedScrollingEnabled(false);
 
+        rcvOutstanding = view.findViewById(R.id.rcvOutstanding);
+        rcvOutstanding.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        outstandingAdapter = new OutstandingAdapter(getContext());
+        rcvOutstanding.setAdapter(outstandingAdapter);
+
         layoutBtnCate = view.findViewById(R.id.layoutBtnCate);
         // Load danh mục món ăn
         loadCategories();
@@ -136,6 +154,7 @@ public class RestaurantDetailFragment extends Fragment {
             int scrollY = scrollView.getScrollY();
             headerLayout.setBackgroundColor(scrollY > 100 ? ContextCompat.getColor(getContext(), R.color.white) : Color.TRANSPARENT);
         });
+
 
         return view;
     }
@@ -204,6 +223,28 @@ public class RestaurantDetailFragment extends Fragment {
 
                 addCategoryButtons(categories);
 
+                // Lấy danh sách món ăn nổi bật cho toàn bộ nhà hàng
+                getTopDishesForRestaurant(restaurantId, new DishCallback() {
+                    @Override
+                    public void onSuccess(List<Map<String, Object>> topDishes) {
+                        Log.d("TopDishes", "Danh sách món nổi bật cho nhà hàng: " + topDishes.size());
+
+                        List<Outstanding> outstandingList = ConvertData.convertToOutstandingList(topDishes);
+
+                        // Cập nhật Adapter trên UI thread
+                        requireActivity().runOnUiThread(() -> {
+                            outstandingAdapter.setData(outstandingList);
+                            outstandingAdapter.notifyDataSetChanged();
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("Firestore", "Lỗi lấy danh sách món nổi bật của nhà hàng", e);
+                    }
+                });
+
+                // Lấy danh sách món ăn theo từng danh mục
                 for (Category cate : categories) {
                     restaurantManagement.getDishes(restaurantId, cate.getId(), new RestaurantManagement.DishCallback() {
                         @Override
@@ -227,6 +268,71 @@ public class RestaurantDetailFragment extends Fragment {
             }
         });
     }
+
+
+    public interface DishCallback {
+        void onSuccess(List<Map<String, Object>> dishList);
+        void onFailure(Exception e);
+    }
+    public void getTopDishesForRestaurant(String restaurantId, final DishCallback callback) {
+        CollectionReference menuRef = db.collection("Restaurants")
+                .document(restaurantId)
+                .collection("menu");
+
+        menuRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Map<String, Object>> topDishList = new ArrayList<>();
+                List<Task<QuerySnapshot>> dishTasks = new ArrayList<>();
+
+                // Lặp qua tất cả danh mục để lấy món ăn trong từng danh mục
+                for (QueryDocumentSnapshot categoryDoc : task.getResult()) {
+                    String categoryId = categoryDoc.getId();
+                    CollectionReference dishRef = menuRef.document(categoryId).collection("menu");
+
+                    Task<QuerySnapshot> dishTask = dishRef.orderBy("quantitySold", Query.Direction.DESCENDING)
+                            .limit(5) // Giới hạn 5 món theo từng danh mục
+                            .get();
+
+                    dishTasks.add(dishTask);
+                }
+
+                // Chạy tất cả truy vấn món ăn song song
+                Tasks.whenAllSuccess(dishTasks).addOnSuccessListener(results -> {
+                    for (Object result : results) {
+                        QuerySnapshot snapshot = (QuerySnapshot) result;
+                        for (QueryDocumentSnapshot document : snapshot) {
+                            Map<String, Object> dishData = new HashMap<>();
+                            dishData.put("id", document.getId());
+                            dishData.put("name", document.getString("name"));
+                            dishData.put("description", document.getString("description"));
+                            dishData.put("price", document.getDouble("price"));
+                            dishData.put("image", document.getString("image"));
+                            dishData.put("quantitySold", document.getLong("quantitySold"));
+
+                            topDishList.add(dishData);
+                        }
+                    }
+
+                    // Sắp xếp danh sách theo số lượng bán (cao -> thấp)
+                    topDishList.sort((a, b) -> Long.compare((Long) b.get("quantitySold"), (Long) a.get("quantitySold")));
+
+                    // Gán top 1, top 2, top 3,...
+                    for (int i = 0; i < topDishList.size(); i++) {
+                        topDishList.get(i).put("rank", "Top #" + (i + 1));
+                    }
+
+                    // Giới hạn danh sách còn tối đa 5 món
+                    List<Map<String, Object>> finalTopDishes = topDishList.subList(0, Math.min(5, topDishList.size()));
+
+                    callback.onSuccess(finalTopDishes);
+                }).addOnFailureListener(callback::onFailure);
+            } else {
+                callback.onFailure(task.getException());
+            }
+        });
+    }
+
+
 
 }
 
