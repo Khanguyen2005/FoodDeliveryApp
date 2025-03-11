@@ -286,7 +286,7 @@ public class RestaurantDetailFragment extends Fragment {
 
                 // Lặp qua tất cả danh mục để lấy món ăn trong từng danh mục
                 for (QueryDocumentSnapshot categoryDoc : task.getResult()) {
-                    String categoryId = categoryDoc.getId();
+                    String categoryId = categoryDoc.getId(); // Anh Khá Thêm: Lấy categoryId
                     CollectionReference dishRef = menuRef.document(categoryId).collection("menu");
 
                     Task<QuerySnapshot> dishTask = dishRef.orderBy("quantitySold", Query.Direction.DESCENDING)
@@ -298,8 +298,10 @@ public class RestaurantDetailFragment extends Fragment {
 
                 // Chạy tất cả truy vấn món ăn song song
                 Tasks.whenAllSuccess(dishTasks).addOnSuccessListener(results -> {
-                    for (Object result : results) {
-                        QuerySnapshot snapshot = (QuerySnapshot) result;
+                    for (int i = 0; i < results.size(); i++) {
+                        QuerySnapshot snapshot = (QuerySnapshot) results.get(i);
+                        String categoryId = task.getResult().getDocuments().get(i).getId(); // Anh Khá Thêm: Lấy categoryId
+
                         for (QueryDocumentSnapshot document : snapshot) {
                             Map<String, Object> dishData = new HashMap<>();
                             dishData.put("id", document.getId());
@@ -308,17 +310,12 @@ public class RestaurantDetailFragment extends Fragment {
                             dishData.put("price", document.getDouble("price"));
                             dishData.put("image", document.getString("image"));
                             dishData.put("quantitySold", document.getLong("quantitySold"));
+                            dishData.put("rank", "Top #" + (topDishList.size() + 1));
+                            dishData.put("restaurantId", restaurantId); // Anh Khá Thêm
+                            dishData.put("categoryId", categoryId); // Anh Khá Thêm
 
                             topDishList.add(dishData);
                         }
-                    }
-
-                    // Sắp xếp danh sách theo số lượng bán (cao -> thấp)
-                    topDishList.sort((a, b) -> Long.compare((Long) b.get("quantitySold"), (Long) a.get("quantitySold")));
-
-                    // Gán top 1, top 2, top 3,...
-                    for (int i = 0; i < topDishList.size(); i++) {
-                        topDishList.get(i).put("rank", "Top #" + (i + 1));
                     }
 
                     // Giới hạn danh sách còn tối đa 5 món
@@ -331,6 +328,7 @@ public class RestaurantDetailFragment extends Fragment {
             }
         });
     }
+
 
 
 

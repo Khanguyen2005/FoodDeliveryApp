@@ -34,8 +34,10 @@ public class ConvertData {
             double price = dish.get("price") != null ? ((Number) dish.get("price")).doubleValue() : 0.0;
             String imgUrl = (String) dish.get("image");
             String rank = (String) dish.get("rank");
+            String restaurantId = (String) dish.get("restaurantId"); // Anh Khá thêm
+            String categoryId = (String) dish.get("categoryId"); // Anh Khá thêm
 
-            Outstanding outstanding = new Outstanding(id, rank, name, price, imgUrl, quantitySold);
+            Outstanding outstanding = new Outstanding(id, rank, name, price, imgUrl, quantitySold, restaurantId, categoryId);
             outstandingsList.add(outstanding);
         }
         return outstandingsList;

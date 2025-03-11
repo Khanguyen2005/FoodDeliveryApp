@@ -2,16 +2,35 @@ package Adapter;
 
 public class Outstanding {
     private String id;
-    private String rank,nameFood,image;
+    private String rank,nameFood,image, restaurantId, categoryId;
     private int quantitySold;
     private Number price;
-    public Outstanding(String id, String rank, String nameFood, Number price, String image,int quantitySold){
+
+    public String getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Outstanding(String id, String rank, String nameFood, Number price, String image, int quantitySold , String restaurantId, String categoryId){
         this.id = id;
         this.rank = rank;
         this.nameFood = nameFood;
         this.price = price;
         this.image = image;
         this.quantitySold = quantitySold;
+        this.restaurantId = restaurantId;
+        this.categoryId = categoryId;
     }
 
     public String getId() {

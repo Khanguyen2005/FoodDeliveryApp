@@ -8,9 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.ltmb.ltmobile.BottomSheetAddTopping;
 import com.ltmb.ltmobile.R;
 
 import java.text.DecimalFormat;
@@ -51,6 +53,13 @@ public class OutstandingAdapter extends RecyclerView.Adapter<OutstandingAdapter.
         DecimalFormat formatter = new DecimalFormat("#,###");
         holder.price.setText(formatter.format(out.getPrice()) + " đ");
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetAddTopping bottomSheet = BottomSheetAddTopping.newInstance(out.getRestaurantId(), out.getCategoryId(), out.getId());
+                bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), "BottomSheetAddTopping");
+            }
+        });
 
     }
 
