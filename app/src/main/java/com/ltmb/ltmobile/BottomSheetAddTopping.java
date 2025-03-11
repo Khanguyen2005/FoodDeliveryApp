@@ -89,29 +89,46 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
         // 🔹 lấy dữ liệu từ nút này truyền qua giỏ hàng nè chó Khoa
         btnAddToCart.setOnClickListener(v -> {
             if (getView() == null) return;
-            // 🔹 Lấy thông tin món ăn
+
+            // Lấy thông tin món ăn
             String name = nameFood.getText().toString();
-            String price = price_food.getText().toString();
-            String quantity = quantitySold.getText().toString();
+            double price = Double.parseDouble(price_food.getText().toString().replace("đ", "").trim());
+            int quantity = Integer.parseInt(quantitySold.getText().toString().replaceAll("\\D+", "")); // Lấy số từ chuỗi
             String imageUrl = (String) imageView.getTag();
-            // 🔹 Lấy danh sách topping đã chọn
-            StringBuilder selectedToppings = new StringBuilder();
+
+            // Lấy danh sách topping đã chọn (Tên: String, Giá: Double)
+            List<Map<String, Object>> selectedToppings = new ArrayList<>();
             for (int i = 0; i < toppingContainer.getChildCount(); i++) {
                 View child = toppingContainer.getChildAt(i);
                 if (child instanceof CheckBox) {
                     CheckBox checkBox = (CheckBox) child;
                     if (checkBox.isChecked()) {
-                        selectedToppings.append(checkBox.getText().toString()).append(", ");
+                        String text = checkBox.getText().toString();
+                        String[] parts = text.split(" - "); // Tách tên và giá
+
+                        if (parts.length == 2) {
+                            String toppingName = parts[0];
+                            double toppingPrice = parts[1].contains("Miễn phí") ? 0 : Double.parseDouble(parts[1].replace("đ", "").trim());
+
+                            // Lưu vào danh sách với tên và giá dạng Map
+                            Map<String, Object> toppingData = new java.util.HashMap<>();
+                            toppingData.put("name", toppingName);
+                            toppingData.put("price", toppingPrice);
+                            selectedToppings.add(toppingData);
+                        }
                     }
                 }
             }
-            Log.d("CartItem", "Món ăn: " + name);
-            Log.d("CartItem", "Giá: " + price);
-            Log.d("CartItem", "Số lượng: " + quantity);
-            Log.d("CartItem", "Ảnh: " + imageUrl);
-            Log.d("CartItem", "Toppings đã chọn: " + (selectedToppings.length() > 0 ? selectedToppings.toString() : "Không có"));
-            Toast.makeText(getContext(), "Đã log thông tin món ăn", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(getContext(), "Đã lấy dữ liệu", Toast.LENGTH_SHORT).show();
+            Log.d("CART_DATA", "Tên món ăn: " + name);
+            Log.d("CART_DATA", "Giá: " + price);
+            Log.d("CART_DATA", "Số lượng: " + quantity);
+            Log.d("CART_DATA", "Hình ảnh: " + imageUrl);
+            Log.d("CART_DATA", "Toppings đã chọn: " + selectedToppings.toString());
         });
+
+
 
 
     }
@@ -269,7 +286,7 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
                         sectionTitle.setTextSize(16);
                         sectionTitle.setTextColor(getResources().getColor(R.color.black));
                         sectionTitle.setPadding(10, 20, 10, 10);
-                        sectionTitle.setBackgroundColor(getResources().getColor(R.color.light_gray)); // Màu nền nhẹ
+                        sectionTitle.setBackgroundColor(getResources().getColor(R.color.color_space)); // Màu nền nhẹ
                         toppingContainer.addView(sectionTitle);
 
                         // **Danh sách các toppings (luôn dùng CheckBox)**

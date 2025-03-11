@@ -297,122 +297,122 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/rounded_corner"
-                    android:backgroundTint="@color/white"
-                    android:layout_marginTop="10sp"
-                    android:padding="10sp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Thương hiệu"
-                        android:textColor="@color/color_main"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:background="@drawable/rounded_corner"-->
+<!--                    android:backgroundTint="@color/white"-->
+<!--                    android:layout_marginTop="10sp"-->
+<!--                    android:padding="10sp"-->
+<!--                    android:orientation="vertical">-->
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Thương hiệu"-->
+<!--                        android:textColor="@color/color_main"-->
+<!--                        android:textSize="20sp"-->
+<!--                        android:textStyle="bold" />-->
 
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scrollbars="none">
+<!--                    <HorizontalScrollView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:scrollbars="none">-->
 
-                        <LinearLayout
-                            android:id="@+id/layoutRes"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:padding="8dp">
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/layoutRes"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:orientation="horizontal"-->
+<!--                            android:gravity="center_vertical"-->
+<!--                            android:padding="8dp">-->
 
-                            <LinearLayout
-                                android:id="@+id/layoutJol"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:padding="8dp">
+<!--                            <LinearLayout-->
+<!--                                android:id="@+id/layoutJol"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:orientation="horizontal"-->
+<!--                                android:gravity="center_vertical"-->
+<!--                                android:padding="8dp">-->
 
-                                <!-- Hình ảnh -->
-                                <ImageView
-                                    android:layout_width="70dp"
-                                    android:layout_height="70dp"
-                                    android:contentDescription="Image description" />
+<!--                                &lt;!&ndash; Hình ảnh &ndash;&gt;-->
+<!--                                <ImageView-->
+<!--                                    android:layout_width="70dp"-->
+<!--                                    android:layout_height="70dp"-->
+<!--                                    android:contentDescription="Image description" />-->
 
-                                <!-- Chữ bên cạnh ảnh -->
-                                <TextView
-                                    android:id="@+id/txtTest"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
-                                    android:gravity="center"
-                                    android:text="JOLLIBEE"
-                                    android:textColor="#000"
-                                    android:textStyle="bold"
-                                    android:textSize="18sp" />
-                            </LinearLayout>
+<!--                                &lt;!&ndash; Chữ bên cạnh ảnh &ndash;&gt;-->
+<!--                                <TextView-->
+<!--                                    android:id="@+id/txtTest"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="8dp"-->
+<!--                                    android:gravity="center"-->
+<!--                                    android:text="JOLLIBEE"-->
+<!--                                    android:textColor="#000"-->
+<!--                                    android:textStyle="bold"-->
+<!--                                    android:textSize="18sp" />-->
+<!--                            </LinearLayout>-->
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginLeft="20sp"
-                                android:padding="8dp">
+<!--                            <LinearLayout-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:orientation="horizontal"-->
+<!--                                android:gravity="center_vertical"-->
+<!--                                android:layout_marginLeft="20sp"-->
+<!--                                android:padding="8dp">-->
 
-                                <!-- Hình ảnh -->
-                                <ImageView
-                                    android:layout_width="80dp"
-                                    android:layout_height="80dp"
+<!--                                &lt;!&ndash; Hình ảnh &ndash;&gt;-->
+<!--                                <ImageView-->
+<!--                                    android:layout_width="80dp"-->
+<!--                                    android:layout_height="80dp"-->
 
-                                    android:contentDescription="Image description" />
-<!--                                android:src="@drawable/dominopizza"-->
+<!--                                    android:contentDescription="Image description" />-->
+<!--&lt;!&ndash;                                android:src="@drawable/dominopizza"&ndash;&gt;-->
 
-                                <!-- Chữ bên cạnh ảnh -->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
-                                    android:gravity="center"
-                                    android:text="Domino's pizza"
-                                    android:textColor="#000"
-                                    android:textStyle="bold"
+<!--                                &lt;!&ndash; Chữ bên cạnh ảnh &ndash;&gt;-->
+<!--                                <TextView-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="8dp"-->
+<!--                                    android:gravity="center"-->
+<!--                                    android:text="Domino's pizza"-->
+<!--                                    android:textColor="#000"-->
+<!--                                    android:textStyle="bold"-->
 
-                                    android:textSize="18sp" />
-                            </LinearLayout>
+<!--                                    android:textSize="18sp" />-->
+<!--                            </LinearLayout>-->
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginLeft="20sp"
-                                android:padding="8dp">
+<!--                            <LinearLayout-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:orientation="horizontal"-->
+<!--                                android:gravity="center_vertical"-->
+<!--                                android:layout_marginLeft="20sp"-->
+<!--                                android:padding="8dp">-->
 
-                                <!-- Hình ảnh -->
-                                <ImageView
-                                    android:layout_width="80dp"
-                                    android:layout_height="80dp"
+<!--                                &lt;!&ndash; Hình ảnh &ndash;&gt;-->
+<!--                                <ImageView-->
+<!--                                    android:layout_width="80dp"-->
+<!--                                    android:layout_height="80dp"-->
 
-                                    android:contentDescription="Image description" />
-<!--                                android:src="@drawable/kfc"-->
+<!--                                    android:contentDescription="Image description" />-->
+<!--&lt;!&ndash;                                android:src="@drawable/kfc"&ndash;&gt;-->
 
-                                <!-- Chữ bên cạnh ảnh -->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
-                                    android:gravity="center"
-                                    android:text="KFC"
-                                    android:textColor="#000"
-                                    android:textStyle="bold"
-                                    android:textSize="18sp" />
-                            </LinearLayout>
-                        </LinearLayout>
+<!--                                &lt;!&ndash; Chữ bên cạnh ảnh &ndash;&gt;-->
+<!--                                <TextView-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="8dp"-->
+<!--                                    android:gravity="center"-->
+<!--                                    android:text="KFC"-->
+<!--                                    android:textColor="#000"-->
+<!--                                    android:textStyle="bold"-->
+<!--                                    android:textSize="18sp" />-->
+<!--                            </LinearLayout>-->
+<!--                        </LinearLayout>-->
 
-                    </HorizontalScrollView>
-                </LinearLayout>
+<!--                    </HorizontalScrollView>-->
+<!--                </LinearLayout>-->
                 <!-- Tới đây -->
 
                 <LinearLayout
