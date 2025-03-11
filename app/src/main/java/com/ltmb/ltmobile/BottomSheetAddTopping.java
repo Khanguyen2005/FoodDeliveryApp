@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.CheckBox; // 🔹 Thêm import CheckBox để tạo danh sách toppings
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,8 +21,12 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +82,7 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
 
         // 🔹 Gọi API để lấy danh sách toppings
 //        fetchToppings();
+        fetchToppings();
         fetchFoodDetails();
         // 🔹 Sự kiện click cho "Thêm vào giỏ hàng"
 
@@ -220,6 +227,95 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
             public void onFailure(Exception e) {
                 Log.e(TAG, "🚨 Lỗi khi lấy danh sách món ăn: ", e);
                 Toast.makeText(getContext(), "Lỗi khi lấy thông tin món ăn!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public void fetchToppings() {
+        Log.d(TAG, "Fetching toppings for Restaurant ID: " + restaurantId + ", Category ID: " + categoryId);
+
+        restaurantManagement.getAllToppings(restaurantId, categoryId, new RestaurantManagement.ToppingCallback() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> toppingList) {
+                if (getActivity() == null) return; // Tránh crash nếu Activity bị đóng
+
+                getActivity().runOnUiThread(() -> {
+                    toppingContainer.removeAllViews();
+
+                    if (toppingList.isEmpty()) {
+                        Log.d(TAG, "⚠️ Không có toppings nào!");
+                        return;
+                    }
+
+                    for (Map<String, Object> toppingData : toppingList) {
+                        String toppingName = (String) toppingData.get("name");
+                        int min = 0, max = 1;
+                        try {
+                            if (toppingData.containsKey("min")) {
+                                min = Integer.parseInt(String.valueOf(toppingData.get("min")));
+                            }
+                            if (toppingData.containsKey("max")) {
+                                max = Integer.parseInt(String.valueOf(toppingData.get("max")));
+                            }
+                        } catch (NumberFormatException e) {
+                            Log.e(TAG, "🚨 Lỗi ép kiểu min/max: " + e.getMessage());
+                        }
+
+                        // **Tiêu đề nhóm toppings**
+                        TextView sectionTitle = new TextView(getContext());
+                        sectionTitle.setText(toppingName + " (Chọn " + min + " - " + max + ")");
+                        sectionTitle.setTextSize(16);
+                        sectionTitle.setTextColor(getResources().getColor(R.color.black));
+                        sectionTitle.setPadding(10, 20, 10, 10);
+                        sectionTitle.setBackgroundColor(getResources().getColor(R.color.light_gray)); // Màu nền nhẹ
+                        toppingContainer.addView(sectionTitle);
+
+                        // **Hiển thị danh sách các items trong nhóm topping**
+                        if (max == 1) {
+                            // Nếu chỉ được chọn 1 -> Dùng RadioGroup
+                            RadioGroup radioGroup = new RadioGroup(getContext());
+                            radioGroup.setOrientation(RadioGroup.VERTICAL);
+
+                            List<Map<String, Object>> items = (List<Map<String, Object>>) toppingData.get("items");
+                            if (items != null) {
+                                for (Map<String, Object> itemData : items) {
+                                    String itemName = (String) itemData.get("name");
+                                    Long itemPrice = (Long) itemData.get("price");
+
+                                    RadioButton radioButton = new RadioButton(getContext());
+                                    radioButton.setText(itemName + (itemPrice != null && itemPrice > 0 ? " - " + itemPrice + "đ" : " - Miễn phí"));
+                                    radioButton.setTextSize(14);
+                                    radioButton.setTextColor(getResources().getColor(R.color.black));
+                                    radioGroup.addView(radioButton);
+                                }
+                            }
+                            toppingContainer.addView(radioGroup);
+                        } else {
+                            // Nếu có thể chọn nhiều -> Dùng CheckBox
+                            List<Map<String, Object>> items = (List<Map<String, Object>>) toppingData.get("items");
+                            if (items != null) {
+                                for (Map<String, Object> itemData : items) {
+                                    String itemName = (String) itemData.get("name");
+                                    Long itemPrice = (Long) itemData.get("price");
+
+                                    CheckBox checkBox = new CheckBox(getContext());
+                                    checkBox.setText(itemName + (itemPrice != null && itemPrice > 0 ? " - " + itemPrice + "đ" : " - Miễn phí"));
+                                    checkBox.setTextSize(14);
+                                    checkBox.setTextColor(getResources().getColor(R.color.black));
+                                    toppingContainer.addView(checkBox);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, "🚨 Lỗi khi lấy danh sách toppings: ", e);
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(getContext(), "Lỗi khi lấy toppings!", Toast.LENGTH_SHORT).show());
+                }
             }
         });
     }
