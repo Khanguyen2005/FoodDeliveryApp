@@ -1,5 +1,7 @@
 package Fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.animation.ObjectAnimator;
@@ -35,6 +37,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ltmb.ltmobile.BottomSheetAddTopping;
 import com.ltmb.ltmobile.R;
+import com.ltmb.ltmobile.services.DiscountService;
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
 import java.util.ArrayList;
@@ -44,6 +47,8 @@ import java.util.Map;
 
 import Adapter.Category;
 import Adapter.CategoryAdapter;
+import Adapter.Discount;
+import Adapter.DiscountAdapter;
 import Adapter.Food;
 import Adapter.FoodAdapter;
 import Adapter.Outstanding;
@@ -62,8 +67,10 @@ public class RestaurantDetailFragment extends Fragment {
     private TextView txtName, txtStar, txtEvaluate;
     private ImageView imgRestaurant, imgBackground;
     private List<Category> listCate = new ArrayList<>();
-    private RecyclerView rcvOutstanding;
+    private List<Discount> discountList = new ArrayList<>();
+    private RecyclerView rcvOutstanding,rcvDiscount;
     private OutstandingAdapter outstandingAdapter;
+    private DiscountAdapter discountAdapter;
     private List<Outstanding> listOutstanding = new ArrayList<>();
 
     private static final String ARG_ID = "id";
@@ -158,9 +165,13 @@ public class RestaurantDetailFragment extends Fragment {
         outstandingAdapter = new OutstandingAdapter(getContext());
         rcvOutstanding.setAdapter(outstandingAdapter);
 
+        rcvDiscount = view.findViewById(R.id.rcvDis);
+        rcvDiscount.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+
         layoutBtnCate = view.findViewById(R.id.layoutBtnCate);
         // Load danh mục món ăn
         loadCategories();
+        loadAndDisplayDiscounts(restaurantId, requireContext(), view);
 
         // Xử lý hiệu ứng Header
         scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
@@ -368,7 +379,72 @@ public class RestaurantDetailFragment extends Fragment {
             }
         });
     }
+    public void loadAndDisplayDiscounts(String restaurantId, Context context, View rootView) {
+        rcvDiscount = rootView.findViewById(R.id.rcvDis);
+        DiscountService discountService = new DiscountService();
 
+        if (restaurantId == null || restaurantId.isEmpty()) {
+            Log.e("DiscountService", "restaurantId không hợp lệ.");
+            return;
+        }
 
+        Log.d("DiscountService", "Bắt đầu lấy mã giảm giá cho nhà hàng: " + restaurantId);
+
+        discountService.getDiscountsByRestaurantId(restaurantId, new DiscountService.DiscountCallback() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> discountDataList) {
+                Log.d("DiscountService", "Dữ liệu mã giảm giá nhận được: " + discountDataList);
+
+                if (discountDataList == null || discountDataList.isEmpty()) {
+                    Log.d("DiscountService", "Không có mã giảm giá nào.");
+                    return;
+                }
+
+                List<Discount> discounts = ConvertData.convertToDiscountList(discountDataList);
+
+                if (discounts.isEmpty()) {
+                    Log.d("DiscountService", "Dữ liệu mã giảm giá trống sau khi chuyển đổi.");
+                    return;
+                }
+
+                // Log chi tiết từng mã giảm giá
+                for (Discount discount : discounts) {
+                    Log.d("DiscountService", "Mã giảm giá: " +
+                            "Code=" + discount.getCode() + ", " +
+                            "Description=" + discount.getDescription() + ", " +
+                            "Value=" + discount.getValue() + ", " +
+                            "StartDate=" + discount.getStartDate() + ", " +
+                            "EndDate=" + discount.getEndDate());
+                }
+
+                // Cập nhật danh sách
+                discountList.clear();
+                discountList.addAll(discounts);
+
+                // Cập nhật giao diện trên UI thread
+                ((Activity) context).runOnUiThread(() -> {
+                    if (rcvDiscount == null) {
+                        Log.e("DiscountService", "RecyclerView chưa được khởi tạo.");
+                        return;
+                    }
+
+                    if (discountAdapter == null) {
+                        discountAdapter = new DiscountAdapter(context, restaurantId, discountList);
+                        rcvDiscount.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                        rcvDiscount.setAdapter(discountAdapter);
+                        Log.d("DiscountService", "Đã thiết lập adapter cho RecyclerView.");
+                    } else {
+                        discountAdapter.notifyDataSetChanged();
+                        Log.d("DiscountService", "Đã cập nhật danh sách mã giảm giá.");
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("DiscountService", "Lỗi khi lấy mã giảm giá: " + e.getMessage(), e);
+            }
+        });
+    }
 }
 

@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:layout_marginHorizontal="10dp"
+        android:layout_marginHorizontal="5dp"
         android:background="@drawable/border"
         android:orientation="horizontal">
         <TextView
@@ -20,9 +20,9 @@
             android:text="Gấu mèo hạnh phúc "/>
         <ImageView
             android:id="@+id/img_dis"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/lotterialogo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/ic_launcher"
             android:scaleType="centerCrop"
             android:background="@drawable/rounded_corner"
             android:clipToOutline="true"

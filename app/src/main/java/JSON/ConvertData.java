@@ -1,10 +1,12 @@
 package JSON;
 
+import com.google.firebase.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import Adapter.Category;
+import Adapter.Discount;
 import Adapter.Food;
 import Adapter.Outstanding;
 import Adapter.Restaurant;
@@ -60,20 +62,21 @@ public class ConvertData {
         }
         return categories;
     }
-    public static List<Restaurant> convertToRestaurantList(List<Map<String, Object>> restaurantList) {
-        List<Restaurant> restaurants = new ArrayList<>();
-        for (Map<String, Object> restaurantData : restaurantList) {
-            String id = (String) restaurantData.get("id");
-            String name = (String) restaurantData.get("name");
-            Number starRes = restaurantData.get("starRes") != null ? Double.parseDouble(restaurantData.get("starRes").toString()) : 5.0;
-            Number evaluate = restaurantData.get("evaluate") != null ? Integer.parseInt(restaurantData.get("evaluate").toString()) : 5.0;
-            String imageUrl = (String) restaurantData.get("imageUrl");
-            String backgroundImageUrl = (String) restaurantData.get("backgroundImageUrl");
+    public static List<Discount> convertToDiscountList(List<Map<String, Object>> discountList) {
+        List<Discount> discounts = new ArrayList<>();
 
-            Restaurant restaurant = new Restaurant(id, name, starRes, evaluate,imageUrl, backgroundImageUrl);
-            restaurants.add(restaurant);
+        for (Map<String, Object> discountData : discountList) {
+            String discountId = (String) discountData.get("discountId");
+            String code = (String) discountData.get("code");
+            String description = (String) discountData.get("description");
+            String type = (String) discountData.get("type");
+            Number value = discountData.get("value") != null ? (Number) discountData.get("value") : 0;
+            Number minOrder = discountData.get("min_order") != null ? (Number) discountData.get("min_order") : 0;
+            Timestamp startDate = discountData.get("start_date") instanceof Timestamp ? (Timestamp) discountData.get("start_date") : null;
+            Timestamp endDate = discountData.get("end_date") instanceof Timestamp ? (Timestamp) discountData.get("end_date") : null;
+            Discount discount = new Discount(discountId, code, description, type, startDate, endDate, minOrder, value);
+            discounts.add(discount);
         }
-        return restaurants;
+        return discounts;
     }
-
 }
