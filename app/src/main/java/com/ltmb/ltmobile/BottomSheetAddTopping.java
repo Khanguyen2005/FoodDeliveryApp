@@ -1,6 +1,9 @@
 package com.ltmb.ltmobile;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +27,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.ltmb.ltmobile.services.CartDatabaseHelper;
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import Adapter.CartItem;
 
 public class BottomSheetAddTopping extends BottomSheetDialogFragment {
     private static final String TAG = "BottomSheetAddTopping";
@@ -89,7 +95,8 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
         // 🔹 lấy dữ liệu từ nút này truyền qua giỏ hàng nè chó Khoa
         btnAddToCart.setOnClickListener(v -> {
             if (getView() == null) return;
-
+            Intent intent = new Intent(getActivity(), CartActivity.class);
+            intent.putExtra("restaurant_id", restaurantId);
             // Lấy thông tin món ăn
             String name = nameFood.getText().toString();
             double price = Double.parseDouble(price_food.getText().toString().replace("đ", "").trim());
@@ -119,13 +126,32 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
                     }
                 }
             }
+            // Chuyển danh sách topping thành chuỗi (nếu không có thì để trống "")
+            String toppings = selectedToppings.isEmpty() ? "" : TextUtils.join(", ", selectedToppings);
 
+            // Tạo đối tượng CartItem
+            CartDatabaseHelper dbHelper = new CartDatabaseHelper(getContext());
+            int newId = dbHelper.getNextId();
+            CartItem cartItem = new CartItem(newId, name, 1, price, restaurantId, imageUrl, toppings);
+
+            // Thêm vào giỏ hàng (SQLite)
+            CartDatabaseHelper cartDatabaseHelper = new CartDatabaseHelper(getContext());
+            cartDatabaseHelper.addToCart(cartItem);
+
+            // Hiển thị thông báo
+            Toast.makeText(getContext(), "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show();
+            // Chuyển sang màn hình giỏ hàng
+            startActivity(intent);
+            dismiss(); // Đóng BottomSheet
+
+            Toast.makeText(getContext(), "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show();
             Toast.makeText(getContext(), "Đã lấy dữ liệu", Toast.LENGTH_SHORT).show();
             Log.d("CART_DATA", "Tên món ăn: " + name);
             Log.d("CART_DATA", "Giá: " + price);
             Log.d("CART_DATA", "Số lượng: " + quantity);
             Log.d("CART_DATA", "Hình ảnh: " + imageUrl);
             Log.d("CART_DATA", "Toppings đã chọn: " + selectedToppings.toString());
+            Log.d("CART_DATA", "nhà hàng đã chọn: " + restaurantId);
         });
 
 
