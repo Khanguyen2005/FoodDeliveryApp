@@ -1,7 +1,9 @@
 package com.ltmb.ltmobile;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -39,6 +41,14 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("NAME", name);
         bundle.putString("PHONE", phone);
         bundle.putString("ADDRESS", address);
+
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("UID", uid);
+        editor.apply();
+        Log.d("UID", "Saved UID to SharedPreferences: " + uid);
 
         // Khởi tạo Fragment và truyền Bundle
         ProfileFragment profileFragment = new ProfileFragment();
