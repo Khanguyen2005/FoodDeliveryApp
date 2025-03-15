@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +24,7 @@ import Adapter.RestaurantAdapter;
 
 public class CategoryActivity extends AppCompatActivity {
     private List<String> categoryKeywords;
-    private String categoryId;
+    private List<String> searchKeywords;
     private RecyclerView recyclerView;
     private RestaurantAdapter adapter;
     private List<Restaurant> listRes;
@@ -37,22 +35,8 @@ public class CategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_category);
-        TextView txtCategoryTitle = findViewById(R.id.cateTitle);
-        Intent intent = getIntent();
-        if (intent != null) {
-            categoryKeywords = intent.getStringArrayListExtra("CATEGORY_KEYWORDS");
-            if (categoryKeywords == null) {
-                categoryKeywords = new ArrayList<>();
-            }
-            if (!categoryKeywords.isEmpty()) {
-                txtCategoryTitle.setText(categoryKeywords.get(0).toUpperCase());
-            } else {
-                txtCategoryTitle.setText("Danh mục");
-            }
-        }
-        Button btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
 
+        TextView txtCategoryTitle = findViewById(R.id.cateTitle);
         recyclerView = findViewById(R.id.rcvRes);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -67,16 +51,50 @@ public class CategoryActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
-        loadRestaurantsByCategory();
+        Intent intent = getIntent();
+        if (intent != null) {
+            categoryKeywords = intent.getStringArrayListExtra("CATEGORY_KEYWORDS");
+            searchKeywords = intent.getStringArrayListExtra("SEARCH_KEYWORDS");
+
+            if (categoryKeywords == null) categoryKeywords = new ArrayList<>();
+            if (searchKeywords == null) searchKeywords = new ArrayList<>();
+
+            if (!categoryKeywords.isEmpty()) {
+                txtCategoryTitle.setText(categoryKeywords.get(0).toUpperCase());
+            } else if (!searchKeywords.isEmpty()) {
+                txtCategoryTitle.setText("Kết quả tìm kiếm: " + String.join(" ", searchKeywords));
+            } else {
+                txtCategoryTitle.setText("Danh mục");
+            }
+
+            loadRestaurantsByCategoryOrSearch();
+        }
+
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Chọn phương thức tải dữ liệu phù hợp dựa trên categoryKeywords hoặc searchKeywords.
+     */
+    private void loadRestaurantsByCategoryOrSearch() {
+        if (!categoryKeywords.isEmpty()) {
+            loadRestaurantsByCategory(); // Load theo danh mục
+        } else if (!searchKeywords.isEmpty()) {
+            loadRestaurantsBySearch(); // Load theo từ khóa tìm kiếm
+        }
+    }
+
+    /**
+     * Lấy danh sách nhà hàng dựa trên danh mục (CATEGORY_KEYWORDS).
+     */
     private void loadRestaurantsByCategory() {
         RestaurantManagement restaurantManagement = new RestaurantManagement();
         restaurantManagement.getRestaurants(new RestaurantManagement.RestaurantCallback() {
             @Override
             public void onSuccess(List<Map<String, Object>> restaurantList) {
                 listRes.clear();
-                restaurantIds.clear(); // Xóa dữ liệu cũ để tránh trùng lặp khi reload
+                restaurantIds.clear();
 
                 for (Map<String, Object> data : restaurantList) {
                     try {
@@ -122,4 +140,76 @@ public class CategoryActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Lấy danh sách nhà hàng dựa trên tìm kiếm (SEARCH_KEYWORDS).
+     */
+    private void loadRestaurantsBySearch() {
+        RestaurantManagement restaurantManagement = new RestaurantManagement();
+        restaurantManagement.getRestaurants(new RestaurantManagement.RestaurantCallback() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> restaurantList) {
+                listRes.clear();
+                restaurantIds.clear();
+
+                for (Map<String, Object> data : restaurantList) {
+                    try {
+                        String restaurantName = (String) data.get("name");
+                        List<Map<String, String>> categories = (List<Map<String, String>>) data.get("categories");
+
+                        boolean matchesSearch = false;
+                        Set<String> searchTokens = new HashSet<>();
+                        for (String keyword : searchKeywords) {
+                            String[] words = keyword.toLowerCase().split("\\s+");
+                            searchTokens.addAll(List.of(words));
+                        }
+
+                        // Kiểm tra danh mục nhà hàng
+                        if (categories != null) {
+                            for (Map<String, String> category : categories) {
+                                if (category.get("name") != null) {
+                                    String categoryNameLower = category.get("name").toLowerCase();
+                                    String[] categoryWords = categoryNameLower.split("\\s+");
+                                    Set<String> categoryTokens = new HashSet<>(List.of(categoryWords));
+
+                                    // Kiểm tra nếu có từ khóa trùng với danh mục
+                                    categoryTokens.retainAll(searchTokens);
+                                    if (!categoryTokens.isEmpty()) {
+                                        matchesSearch = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (matchesSearch) {
+                            String id = String.valueOf(data.get("id"));
+                            if (restaurantIds.contains(id)) {
+                                continue;
+                            }
+
+                            Number starRes = data.get("starRes") != null ? Double.parseDouble(data.get("starRes").toString()) : 5.0;
+                            Number evaluate = data.get("evaluate") != null ? Integer.parseInt(data.get("evaluate").toString()) : 0;
+                            String imgUrl = (String) data.get("image");
+                            String backgroundImgUrl = (String) data.get("backgroundImage");
+
+                            Restaurant res = new Restaurant(id, restaurantName, starRes, evaluate, imgUrl, backgroundImgUrl);
+                            listRes.add(res);
+                            restaurantIds.add(id);
+                        }
+
+                    } catch (Exception e) {
+                        Log.e("Firestore", "Lỗi chuyển đổi dữ liệu", e);
+                    }
+                }
+                adapter.setData(listRes);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("Firestore", "Lỗi tải danh sách nhà hàng", e);
+            }
+        });
+    }
+
 }
