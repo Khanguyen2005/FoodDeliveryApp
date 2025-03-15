@@ -76,6 +76,12 @@
             android:layout_height="2dp"
             android:background="@android:color/darker_gray"
             android:layout_marginVertical="15dp" />
+        <Button
+            android:id="@+id/btnEditProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chỉnh sửa hồ sơ"
+            android:layout_marginTop="16dp"/>
 
 
     </LinearLayout>
