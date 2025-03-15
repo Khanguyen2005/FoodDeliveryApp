@@ -20,6 +20,8 @@
         <activity
             android:name=".CheckoutActivity"
             android:exported="false" />
+        <activity android:name=".services.OrderSuccessActivity"
+            android:exported="false" />
         <activity
             android:name=".CartActivity"
             android:exported="false" />
