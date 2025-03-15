@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.ltmb.ltmobile.R;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.CheckoutViewHolder> {
     private List<CartItem> checkoutList;
@@ -34,13 +36,31 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.Checko
     @Override
     public void onBindViewHolder(@NonNull CheckoutViewHolder holder, int position) {
         CartItem item = checkoutList.get(position);
+        NumberFormat formatter = NumberFormat.getNumberInstance(Locale.US);
 
         holder.tvName.setText(item.getName());
-        holder.tvPrice.setText(item.getPrice() + " đ");
+        holder.tvPrice.setText(formatter.format(item.getTotalPrice()) + " đ");
         holder.tvQuantity.setText("Số lượng: " + item.getQuantity());
-        holder.tvTopping.setText("Topping: " + (item.getTopping().isEmpty() ? "Không có" : item.getTopping()));
 
-        Glide.with(context).load(item.getImageUrl()).into(holder.imgFood);
+        // Hiển thị topping rõ ràng
+        if (item.getToppings().isEmpty()) {
+            holder.tvTopping.setText("Topping: Không có");
+        } else {
+            StringBuilder toppingsText = new StringBuilder("Topping: ");
+            for (int i = 0; i < item.getToppings().size(); i++) {
+                toppingsText.append(item.getToppings().get(i).get("name"));
+                if (i < item.getToppings().size() - 1) {
+                    toppingsText.append(", ");
+                }
+            }
+            holder.tvTopping.setText(toppingsText.toString());
+        }
+
+        // Load hình ảnh
+        Glide.with(context)
+                .load(item.getImageUrl())
+                .placeholder(R.drawable.fastfood) // Ảnh mặc định nếu lỗi
+                .into(holder.imgFood);
     }
 
     @Override

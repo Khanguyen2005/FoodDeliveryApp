@@ -132,7 +132,7 @@ public class BottomSheetAddTopping extends BottomSheetDialogFragment {
             // Tạo đối tượng CartItem
             CartDatabaseHelper dbHelper = new CartDatabaseHelper(getContext());
             int newId = dbHelper.getNextId();
-            CartItem cartItem = new CartItem(newId, name, 1, price, restaurantId, imageUrl, toppings);
+            CartItem cartItem = new CartItem(newId, name, 1, price, restaurantId, imageUrl, selectedToppings);
 
             // Thêm vào giỏ hàng (SQLite)
             CartDatabaseHelper cartDatabaseHelper = new CartDatabaseHelper(getContext());

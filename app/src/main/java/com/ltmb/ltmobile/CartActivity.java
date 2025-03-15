@@ -2,7 +2,7 @@ package com.ltmb.ltmobile;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;  // Import để debug
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -38,11 +38,10 @@ public class CartActivity extends AppCompatActivity {
         btnCheckout = findViewById(R.id.btnCheckout);
         dbHelper = new CartDatabaseHelper(this);
 
-
-
         // Lấy ID nhà hàng từ Intent
         currentRestaurantId = getIntent().getStringExtra("restaurant_id");
-        // Kiểm tra nếu `currentRestaurantId` bị nulls
+
+        // Kiểm tra nếu `currentRestaurantId` bị null hoặc trống
         if (currentRestaurantId == null || currentRestaurantId.isEmpty()) {
             Log.e("CartActivity", "⚠️ restaurant_id bị NULL hoặc trống!");
             showAlert("Lỗi", "Không tìm thấy ID nhà hàng. Vui lòng thử lại.");
@@ -54,43 +53,36 @@ public class CartActivity extends AppCompatActivity {
         loadCartItems();
 
         btnCheckout.setOnClickListener(v -> {
-            if (!cartItemList.isEmpty()) {
+            if (cartItemList == null || cartItemList.isEmpty()) {
+                showAlert("Giỏ hàng đang trống!", "Vui lòng thêm món vào giỏ hàng trước khi thanh toán.");
+            } else {
                 Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
                 intent.putExtra("restaurant_id", currentRestaurantId);
                 startActivity(intent);
-            } else {
-                showAlert("Giỏ hàng đang trống!", "Vui lòng thêm món vào giỏ hàng trước khi thanh toán.");
             }
         });
     }
 
-    // Load danh sách món trong giỏ hàng
     private void loadCartItems() {
         cartItemList = dbHelper.getCartItems(currentRestaurantId);
 
-        if (cartItemList == null || cartItemList.isEmpty()) {
-            Log.e("CartActivity", "⚠️ Giỏ hàng trống hoặc không thể lấy dữ liệu!");
-            showAlert("Giỏ hàng trống", "Không có món nào trong giỏ hàng của bạn.");
-            return;
+        if (cartItemList.isEmpty()) {
+            Log.w("CartActivity", "⚠️ Không có món nào trong giỏ hàng.");
+            tvTotalPrice.setText("Giỏ hàng trống");
+        } else {
+            Log.d("CartActivity", "🛒 Số món trong giỏ hàng: " + cartItemList.size());
+            cartAdapter = new CartAdapter(cartItemList, this, dbHelper, tvTotalPrice);
+            recyclerViewCart.setLayoutManager(new LinearLayoutManager(this));
+            recyclerViewCart.setAdapter(cartAdapter);
+            updateTotalPrice();
         }
-
-        Log.d("CartActivity", "✅ Số món trong giỏ hàng: " + cartItemList.size());
-
-        cartAdapter = new CartAdapter(cartItemList, this, dbHelper, tvTotalPrice);
-        recyclerViewCart.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewCart.setAdapter(cartAdapter);
-
-        updateTotalPrice();
     }
 
-    // Cập nhật tổng tiền
-    public void updateTotalPrice() {
+    private void updateTotalPrice() {
         double totalPrice = dbHelper.getTotalPrice(currentRestaurantId);
-        Log.d("CartActivity", "💰 Tổng tiền: " + totalPrice);
         tvTotalPrice.setText("Tổng tiền: " + totalPrice + " đ");
     }
 
-    // Hiển thị thông báo
     private void showAlert(String title, String message) {
         new AlertDialog.Builder(this)
                 .setTitle(title)
@@ -98,4 +90,5 @@ public class CartActivity extends AppCompatActivity {
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .show();
     }
+
 }

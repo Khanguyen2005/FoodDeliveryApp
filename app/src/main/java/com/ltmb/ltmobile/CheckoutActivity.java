@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,8 +15,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.ltmb.ltmobile.services.CartDatabaseHelper;
 import com.ltmb.ltmobile.services.OrderSuccessActivity;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import Adapter.CartItem;
@@ -64,27 +63,26 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private void updateTotalPrice() {
         double totalPrice = dbHelper.getTotalPrice(currentRestaurantId);
-        tvTotalCheckoutPrice.setText("Tổng tiền: " + totalPrice + " đ");
+        String formattedPrice = NumberFormat.getNumberInstance(Locale.getDefault()).format(totalPrice) + " đ";
+        tvTotalCheckoutPrice.setText("Tổng tiền: " + formattedPrice);
     }
 
     private void confirmPayment() {
         if (checkoutList.isEmpty()) return;
 
-        // Tạo đơn hàng lưu vào Firestore
         Map<String, Object> orderData = new HashMap<>();
         orderData.put("restaurantId", currentRestaurantId);
         orderData.put("totalPrice", dbHelper.getTotalPrice(currentRestaurantId));
-        orderData.put("items", checkoutList);
+        orderData.put("items", dbHelper.getCartItemsAsMap(currentRestaurantId)); // Gọi hàm mới
 
         firestore.collection("Orders")
                 .add(orderData)
                 .addOnSuccessListener(documentReference -> {
-                    dbHelper.clearCart(currentRestaurantId);  // Xóa giỏ hàng sau khi thanh toán thành công
+                    dbHelper.clearCart(currentRestaurantId);
                     startActivity(new Intent(CheckoutActivity.this, OrderSuccessActivity.class));
                     finish();
                 })
-                .addOnFailureListener(e -> {
-                    tvTotalCheckoutPrice.setText("Lỗi thanh toán, vui lòng thử lại.");
-                });
+                .addOnFailureListener(e -> tvTotalCheckoutPrice.setText("Lỗi thanh toán, vui lòng thử lại."));
     }
+
 }

@@ -14,9 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.ltmb.ltmobile.R;
+import Adapter.CartItem;
 import com.ltmb.ltmobile.services.CartDatabaseHelper;
 
 import java.util.List;
+import java.util.Map;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
     private List<CartItem> cartItems;
@@ -45,34 +47,54 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.tvName.setText(item.getName());
         holder.tvPrice.setText(item.getPrice() + " đ");
         holder.tvQuantity.setText("Số lượng: " + item.getQuantity());
-        holder.tvTopping.setText("Topping: " + (item.getTopping().isEmpty() ? "Không có" : item.getTopping()));
 
-        Glide.with(context).load(item.getImageUrl()).into(holder.imgFood);
+        // Hiển thị danh sách topping
+        List<Map<String, Object>> toppings = item.getToppings();
+        StringBuilder toppingText = new StringBuilder("Topping: ");
+        if (toppings.isEmpty()) {
+            toppingText.append("Không có");
+        } else {
+            for (Map<String, Object> topping : toppings) {
+                toppingText.append(topping.get("name")).append(", ");
+            }
+            toppingText.setLength(toppingText.length() - 2); // Xóa dấu phẩy cuối
+        }
+        holder.tvTopping.setText(toppingText.toString());
 
+        // Load ảnh món ăn, kiểm tra null
+        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+            Glide.with(context).load(item.getImageUrl()).into(holder.imgFood);
+        } else {
+            holder.imgFood.setImageResource(R.drawable.fastfood);
+        }
+
+        // Nút tăng số lượng
         holder.btnIncrease.setOnClickListener(v -> {
             item.setQuantity(item.getQuantity() + 1);
-            dbHelper.updateCartItem(item.getId(), item.getRestaurantId(), item.getQuantity(), item.getTopping());
-            notifyDataSetChanged();
+            dbHelper.updateCartItem(item);
+            notifyItemChanged(position);
             updateTotalPrice();
         });
 
+        // Nút giảm số lượng
         holder.btnDecrease.setOnClickListener(v -> {
             if (item.getQuantity() > 1) {
                 item.setQuantity(item.getQuantity() - 1);
-                dbHelper.updateCartItem(item.getId(), item.getRestaurantId(), item.getQuantity(), item.getTopping());
-                notifyDataSetChanged();
+                dbHelper.updateCartItem(item);
+                notifyItemChanged(position);
                 updateTotalPrice();
             }
         });
 
+        // Nút xóa món ăn
         holder.btnRemove.setOnClickListener(v -> {
             new AlertDialog.Builder(context)
                     .setTitle("Xóa món?")
                     .setMessage("Bạn có chắc chắn muốn xóa món này?")
                     .setPositiveButton("Có", (dialog, which) -> {
-                        dbHelper.removeCartItem(item.getId(), item.getRestaurantId());
+                        dbHelper.removeCartItem(item);
                         cartItems.remove(position);
-                        notifyDataSetChanged();
+                        notifyItemRemoved(position);
                         updateTotalPrice();
                     })
                     .setNegativeButton("Không", null)
@@ -85,15 +107,20 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         return cartItems.size();
     }
 
+    // Cập nhật tổng tiền
     private void updateTotalPrice() {
-        double totalPrice = dbHelper.getTotalPrice(cartItems.get(0).getRestaurantId());
-        tvTotalPrice.setText("Tổng tiền: " + totalPrice + " đ");
+        if (!cartItems.isEmpty()) {
+            double totalPrice = dbHelper.getTotalPrice(cartItems.get(0).getRestaurantId());
+            tvTotalPrice.setText("Tổng tiền: " + totalPrice + " đ");
+        } else {
+            tvTotalPrice.setText("Tổng tiền: 0 đ");
+        }
     }
 
     public static class CartViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvPrice, tvQuantity, tvTopping;
-        ImageView imgFood,btnRemove;
-        Button btnIncrease, btnDecrease ;
+        ImageView imgFood, btnRemove;
+        Button btnIncrease, btnDecrease;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
