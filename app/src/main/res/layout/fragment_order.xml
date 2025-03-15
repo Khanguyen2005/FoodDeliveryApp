@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
-            android:id="@+id/txtOngoing"
+            android:id="@+id/txtHistory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -35,7 +35,7 @@
             android:textColor="@color/color_main"
             android:paddingBottom="20dp"/>
         <TextView
-            android:id="@+id/txtHistory"
+            android:id="@+id/txtReview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -48,7 +48,7 @@
             android:paddingTop="20dp"
             android:paddingBottom="20dp"/>
         <TextView
-            android:id="@+id/txtReview"
+            android:id="@+id/txtDraft"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
