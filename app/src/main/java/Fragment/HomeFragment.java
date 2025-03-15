@@ -3,9 +3,12 @@ package Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -63,6 +66,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         loadRestaurants();
+
         LinearLayout layoutRice = view.findViewById(R.id.layoutRice);
         LinearLayout layoutNoodle = view.findViewById(R.id.layoutNoodle);
         LinearLayout layoutMilkTea = view.findViewById(R.id.layoutMilktea);
@@ -73,6 +77,28 @@ public class HomeFragment extends Fragment {
         layoutFriedChicken.setOnClickListener(v -> openCategory(Arrays.asList("gà rán","gà giòn", "pizza", "burger", "khoai tây chiên")));
         layoutSnack.setOnClickListener(v -> openCategory(Arrays.asList("Ăn vặt","bánh tráng", "trà sữa", "tea")));
         layoutMilkTea.setOnClickListener(v -> openCategory(Arrays.asList("trà sữa", "trà", "cà phê", "tea")));
+
+        EditText searchFood = view.findViewById(R.id.searchFood);
+
+        searchFood.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+
+                String searchText = searchFood.getText().toString().trim();
+                if (!searchText.isEmpty()) {
+                    List<String> searchKeywords = Arrays.asList(searchText.split("\\s+")); // Tách từ khóa theo dấu cách
+
+                    Intent intent1 = new Intent(getContext(), CategoryActivity.class);
+                    intent1.putStringArrayListExtra("SEARCH_KEYWORDS", new ArrayList<>(searchKeywords));
+                    intent1.putExtra("EXTRA_SOURCE", "SEARCH"); // Đánh dấu là tìm kiếm
+                    startActivity(intent1);
+                }
+                return true; // Ngăn chặn sự kiện tiếp tục xử lý (tránh nhảy vào nút khác)
+            }
+            return false;
+        });
+
+
 
 
 //        TextView txtTest = view.findViewById(R.id.txtTest);
