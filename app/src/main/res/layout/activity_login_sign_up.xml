@@ -55,7 +55,7 @@
                     android:backgroundTint="#E5EAEF"
                     android:hint="Nhập email"
                     android:inputType="textEmailAddress"
-                    android:paddingLeft="10sp"
+                    android:paddingLeft="10dp"
                     android:layout_marginBottom="10dp" />
 
                 <TextView
@@ -72,7 +72,7 @@
                     android:backgroundTint="#E5EAEF"
                     android:hint="Nhập mật khẩu"
                     android:inputType="textPassword"
-                    android:paddingLeft="10sp"
+                    android:paddingLeft="10dp"
                     android:layout_marginBottom="10dp" />
 
                 <Button

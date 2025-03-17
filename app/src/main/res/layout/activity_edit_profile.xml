@@ -5,29 +5,69 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/backgroundeditinfo"
     tools:context=".EditProfileActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="10dp"
         android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="50dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/color_main"
+            android:text = "Chỉnh sửa thông tin cá nhân"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/gray"
+            android:text="Họ tên"/>
         <EditText
             android:id="@+id/edtName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:background="@drawable/rounded_corner"
+            android:backgroundTint="#E5EAEF"
             android:hint="Tên"
             android:inputType="textPersonName" />
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/gray"
+            android:text="Số điện thoại"/>
         <EditText
             android:id="@+id/edtPhone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:background="@drawable/rounded_corner"
+            android:backgroundTint="#E5EAEF"
             android:hint="Số điện thoại"
             android:inputType="phone" />
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/gray"
+            android:text="Địa chỉ"/>
         <EditText
             android:id="@+id/edtAddress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:background="@drawable/rounded_corner"
+            android:backgroundTint="#E5EAEF"
             android:hint="Địa chỉ"
             android:inputType="textPostalAddress" />
 
@@ -36,7 +76,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Lưu"
-            android:backgroundTint="@color/black"
+            android:textSize="20sp"
+            android:backgroundTint="@color/color_main"
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp"/>
     </LinearLayout>

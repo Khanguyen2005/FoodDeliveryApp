@@ -74,12 +74,12 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        // Mở HomeFragment khi ứng dụng chạy
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null && getIntent().getStringExtra("UID") != null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.frame_layout, new HomeFragment())
                     .commit();
         }
+
 
         // Xử lý sự kiện khi chọn item trên BottomNavigationView
         bottomNavigationView.setOnItemSelectedListener(item -> {

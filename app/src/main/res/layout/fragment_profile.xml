@@ -95,5 +95,17 @@
                 android:drawableTint="@color/gray"
                 android:text="Đổi mật khẩu"/>
         </LinearLayout>
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/gray"
+            android:gravity="start|center"
+            android:textSize="20sp"
+            android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
+            android:drawableTint="@color/gray"
+            android:text="Đăng xuất"/>
+
     </LinearLayout>
 </FrameLayout>
