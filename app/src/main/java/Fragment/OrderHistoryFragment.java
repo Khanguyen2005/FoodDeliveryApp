@@ -1,66 +1,94 @@
 package Fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.ltmb.ltmobile.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OrderHistoryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import Adapter.OrderHistoryAdapter;
+import Adapter.OrderItemModel;
+import Adapter.OrderModel;
+
 public class OrderHistoryFragment extends Fragment {
+    private RecyclerView recyclerView;
+    private OrderHistoryAdapter adapter;
+    private List<OrderModel> orderList;
+    private FirebaseFirestore firestore;
+    private FirebaseUser user;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public OrderHistoryFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OrderHistoryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static OrderHistoryFragment newInstance(String param1, String param2) {
-        OrderHistoryFragment fragment = new OrderHistoryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_order_history, container, false);
+
+        recyclerView = view.findViewById(R.id.recyclerViewOrderHistory);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        orderList = new ArrayList<>();
+        adapter = new OrderHistoryAdapter(getContext(), orderList);
+        recyclerView.setAdapter(adapter);
+
+        firestore = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            fetchOrderHistory();
+        } else {
+            Toast.makeText(getContext(), "Bạn chưa đăng nhập!", Toast.LENGTH_SHORT).show();
         }
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_order_history, container, false);
+    private void fetchOrderHistory() {
+        firestore.collection("Orders")
+                .whereEqualTo("userId", user.getUid())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    orderList.clear();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        String restaurantId = doc.getString("restaurantId");
+                        double totalPrice = doc.getDouble("totalPrice"); // Đổi sang getDouble()
+
+                        List<Map<String, Object>> itemsData = (List<Map<String, Object>>) doc.get("items");
+                        List<OrderItemModel> orderItems = new ArrayList<>();
+
+                        if (itemsData != null) {
+                            for (Map<String, Object> item : itemsData) {
+                                String name = (String) item.get("name");
+                                String imageUrl = (String) item.get("imageUrl");
+                                int quantity = ((Long) item.get("quantity")).intValue();
+                                double price = (item.get("price") instanceof Long) ? ((Long) item.get("price")).doubleValue() : (Double) item.get("price");
+
+                                List<Map<String, Object>> toppings = (List<Map<String, Object>>) item.get("toppings");
+
+                                orderItems.add(new OrderItemModel(name, imageUrl, quantity, price, toppings));
+                            }
+                        }
+
+                        orderList.add(new OrderModel(user.getUid(), restaurantId, totalPrice, orderItems));
+                    }
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Lỗi khi lấy dữ liệu!", Toast.LENGTH_SHORT).show());
     }
+
+
 }

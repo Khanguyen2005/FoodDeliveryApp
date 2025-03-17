@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.ltmb.ltmobile.services.CartDatabaseHelper;
 import com.ltmb.ltmobile.services.OrderSuccessActivity;
@@ -70,10 +72,19 @@ public class CheckoutActivity extends AppCompatActivity {
     private void confirmPayment() {
         if (checkoutList.isEmpty()) return;
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            tvTotalCheckoutPrice.setText("Lỗi: Người dùng chưa đăng nhập.");
+            return;
+        }
+
+        String userId = user.getUid(); // Lấy UID của người dùng hiện tại
+
         Map<String, Object> orderData = new HashMap<>();
+        orderData.put("userId", userId); // Gán UID vào đơn hàng
         orderData.put("restaurantId", currentRestaurantId);
         orderData.put("totalPrice", dbHelper.getTotalPrice(currentRestaurantId));
-        orderData.put("items", dbHelper.getCartItemsAsMap(currentRestaurantId)); // Gọi hàm mới
+        orderData.put("items", dbHelper.getCartItemsAsMap(currentRestaurantId));
 
         firestore.collection("Orders")
                 .add(orderData)
@@ -84,5 +95,6 @@ public class CheckoutActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> tvTotalCheckoutPrice.setText("Lỗi thanh toán, vui lòng thử lại."));
     }
+
 
 }
