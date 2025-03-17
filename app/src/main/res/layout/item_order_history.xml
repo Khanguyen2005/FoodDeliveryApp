@@ -16,7 +16,7 @@
         android:text="Nhà hàng: ABC"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@android:color/holo_blue_dark"
+        android:textColor="@color/color_main"
         android:paddingBottom="8dp" />
 
     <!-- RecyclerView con để hiển thị danh sách món ăn -->
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tổng tiền: 0 đ"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@android:color/holo_red_dark"
         android:gravity="end"

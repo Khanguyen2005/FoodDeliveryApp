@@ -33,10 +33,10 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         OrderModel order = orderList.get(position);
 
         holder.tvOrderTotal.setText(String.format("Tổng tiền: %.0f đ", order.getTotalPrice()));
-
+        holder.tvRestaurantName.setText(order.getRestaurantName());
         // Thiết lập RecyclerView con để hiển thị danh sách món ăn
         OrderItemAdapter itemAdapter = new OrderItemAdapter(context, order.getItems());
-        holder.rvOrderItems.setLayoutManager(new LinearLayoutManager(context));
+        holder.rvOrderItems.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         holder.rvOrderItems.setAdapter(itemAdapter);
     }
 
@@ -46,12 +46,13 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvOrderTotal;
+        TextView tvOrderTotal,tvRestaurantName;
         RecyclerView rvOrderItems;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvOrderTotal = itemView.findViewById(R.id.tvOrderTotal);
+            tvRestaurantName = itemView.findViewById(R.id.tvRestaurantName);
             rvOrderItems = itemView.findViewById(R.id.rvOrderItems);
         }
     }

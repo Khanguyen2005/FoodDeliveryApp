@@ -42,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("PHONE", phone);
         bundle.putString("ADDRESS", address);
 
+        if (getIntent().getBooleanExtra("showEditProfile", false)) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame_layout, new ProfileFragment()) // Thay thế bằng ID container phù hợp
+                    .addToBackStack(null)
+                    .commit();
+        }
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);

@@ -1,5 +1,6 @@
 package Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.ltmb.ltmobile.CheckoutActivity;
+import com.ltmb.ltmobile.EditProfileActivity;
+import com.ltmb.ltmobile.MainActivity;
 import com.ltmb.ltmobile.R;
 import com.ltmb.ltmobile.services.UserManager;
 
@@ -20,7 +24,7 @@ import java.util.Map;
 
 public class ProfileFragment extends Fragment {
 
-    private TextView txtEmail, txtUID, txtToken, txtName, txtPhone, txtAddress;
+    private TextView txtEmail, txtName, txtPhone;
     private Button btnEditProfile;
 
     public ProfileFragment() {
@@ -39,20 +43,13 @@ public class ProfileFragment extends Fragment {
 
         // Ánh xạ TextView từ layout
         txtEmail = view.findViewById(R.id.txtEmail);
-        txtUID = view.findViewById(R.id.txtUID);
-        txtToken = view.findViewById(R.id.txtToken);
         txtName = view.findViewById(R.id.txtName);
         txtPhone = view.findViewById(R.id.txtPhone);
-        txtAddress = view.findViewById(R.id.txtAddress);
         btnEditProfile = view.findViewById(R.id.btnEditProfile);
 
-        // Thiết lập nút chỉnh sửa
         btnEditProfile.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frame_layout, new EditProfileFragment())
-                    .addToBackStack(null)
-                    .commit();
+            Intent intent = new Intent(requireContext(), EditProfileActivity.class);
+            startActivity(intent);
         });
 
         // Lắng nghe dữ liệu người dùng từ UserManager
@@ -64,15 +61,12 @@ public class ProfileFragment extends Fragment {
         if (auth.getCurrentUser() == null) return;
 
         // Hiển thị thông tin từ FirebaseAuth
-        txtEmail.setText("Email: " + auth.getCurrentUser().getEmail());
-        txtUID.setText("UID: " + auth.getCurrentUser().getUid());
-        txtToken.setText("Token: " + auth.getCurrentUser().getIdToken(false));
+        txtEmail.setText(auth.getCurrentUser().getEmail());
 
         // Hiển thị thông tin từ Firestore
         if (userData != null) {
-            txtName.setText("Tên: " + userData.getOrDefault("name", "Không có tên"));
-            txtPhone.setText("Số điện thoại: " + userData.getOrDefault("phoneNumber", "Không có số điện thoại"));
-            txtAddress.setText("Địa chỉ: " + userData.getOrDefault("address", "Không có địa chỉ"));
+            txtName.setText(String.valueOf(userData.getOrDefault("name", "Không có tên")));
+            txtPhone.setText(String.valueOf(userData.getOrDefault("phoneNumber", "Không có số điện thoại")));
         }
     }
 }

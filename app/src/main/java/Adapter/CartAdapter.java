@@ -17,7 +17,9 @@ import com.ltmb.ltmobile.R;
 import Adapter.CartItem;
 import com.ltmb.ltmobile.services.CartDatabaseHelper;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
@@ -45,8 +47,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         CartItem item = cartItems.get(position);
 
         holder.tvName.setText(item.getName());
-        holder.tvPrice.setText(item.getPrice() + " đ");
-        holder.tvQuantity.setText("Số lượng: " + item.getQuantity());
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        holder.tvPrice.setText(currencyFormat.format(item.getPrice()));
+
+        holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
+
 
         // Hiển thị danh sách topping
         List<Map<String, Object>> toppings = item.getToppings();

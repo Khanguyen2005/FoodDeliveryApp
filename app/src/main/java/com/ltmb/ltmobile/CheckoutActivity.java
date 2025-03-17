@@ -2,9 +2,10 @@ package com.ltmb.ltmobile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,10 +29,12 @@ import Adapter.CheckoutAdapter;
 
 public class CheckoutActivity extends AppCompatActivity {
     private RecyclerView recyclerViewCheckout;
-    private TextView tvTotalCheckoutPrice;
+    private TextView tvTotalCheckoutPrice,tvUserAddress;
     private Button btnConfirmPayment;
     private CartDatabaseHelper dbHelper;
     private CheckoutAdapter checkoutAdapter;
+
+    private LinearLayout layoutAddress;
     private List<CartItem> checkoutList;
     private String currentRestaurantId;
     private FirebaseFirestore firestore;
@@ -40,6 +43,15 @@ public class CheckoutActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+        tvUserAddress = findViewById(R.id.txtAddress);
+        layoutAddress = findViewById(R.id.layoutAddress);
+
+        layoutAddress.setOnClickListener(v -> {
+            Intent intent = new Intent(CheckoutActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+        });
+
+
 
         recyclerViewCheckout = findViewById(R.id.recyclerViewCheckout);
         tvTotalCheckoutPrice = findViewById(R.id.tvTotalCheckoutPrice);
@@ -50,6 +62,7 @@ public class CheckoutActivity extends AppCompatActivity {
         currentRestaurantId = getIntent().getStringExtra("restaurant_id");
 
         loadCheckoutItems();
+        listenForAddressUpdates();
 
         btnConfirmPayment.setOnClickListener(v -> confirmPayment());
     }
@@ -94,6 +107,23 @@ public class CheckoutActivity extends AppCompatActivity {
                     finish();
                 })
                 .addOnFailureListener(e -> tvTotalCheckoutPrice.setText("Lỗi thanh toán, vui lòng thử lại."));
+    }
+    private void listenForAddressUpdates() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Users").document(user.getUid())
+                .addSnapshotListener((documentSnapshot, error) -> {
+                    if (error != null) {
+                        Log.e("FirestoreError", "Lỗi khi tải địa chỉ: " + error.getMessage());
+                        return;
+                    }
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        String address = documentSnapshot.getString("address");
+                        tvUserAddress.setText(address != null ? address : "Chưa có địa chỉ");
+                    }
+                });
     }
 
 

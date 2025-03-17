@@ -3,37 +3,176 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/tvCheckoutTitle"
         android:layout_width="wrap_content"
+        android:paddingTop="10dp"
         android:layout_height="wrap_content"
         android:text="Xác nhận thanh toán"
+        android:textColor="@color/color_main"
+        android:layout_gravity="center"
         android:textSize="24sp"
         android:textStyle="bold"
         android:paddingBottom="10dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewCheckout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_weight="1"
+       android:layout_height="0dp">
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="vertical">
+           <LinearLayout
+               android:id="@+id/layoutAddress"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:paddingVertical="20dp"
+               android:paddingHorizontal="10dp"
+               android:orientation="horizontal">
+               <TextView
+                   android:id="@+id/txtAddress"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:layout_height="wrap_content"
+                   android:textSize="20sp"
+                   android:drawableLeft="@drawable/location_pin_svgrepo_com"
+                   android:text="Address"/>
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:textSize="20sp"
+                   android:drawableLeft="@drawable/baseline_arrow_forward_ios_24"
+                   />
+           </LinearLayout>
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/color_space"
+               android:padding="10dp"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:textColor="@color/gray"
+               android:text="Danh sách đã chọn"/>
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/recyclerViewCheckout"
+               android:layout_width="match_parent"
+               android:layout_height="0dp"
+               android:layout_weight="1"/>
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/color_space"
+               android:padding="10dp"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:textColor="@color/gray"
+               android:text="Áp dụng ưu đãi"/>
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/white"
+               android:paddingHorizontal="10dp"
+               android:orientation="horizontal">
+               <ImageView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/discount_percent_svgrepo_com"
+                   android:layout_gravity="center"/>
+               <TextView
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:paddingVertical="15dp"
+                   android:paddingHorizontal="10dp"
+                   android:textSize="20sp"
+                   android:drawablePadding="4dp"
+                   android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
+                   android:textColor="@color/color_discount"
+                   android:drawableTint="@color/color_discount"
+                   android:text="Áp dụng mã khuyến mãi"/>
+           </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvTotalCheckoutPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tổng tiền: 0 đ"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:paddingTop="10dp"/>
+           <!-- Phương thức thanh toán -->
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/color_space"
+               android:padding="10dp"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:textColor="@color/gray"
+               android:text="Phương thức thanh toán"/>
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/white"
+               android:orientation="horizontal"
+               android:padding="10dp">
 
-    <Button
-        android:id="@+id/btnConfirmPayment"
+               <RadioGroup
+                   android:id="@+id/radioGroupPayment"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:background="@color/white"
+                   android:orientation="vertical">
+
+                   <!-- Phương thức thanh toán bằng tiền mặt -->
+                   <RadioButton
+                       android:id="@+id/rbCash"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="Tiền mặt"
+                       android:textSize="20sp"
+                       android:drawableLeft="@drawable/cash_svgrepo_com"
+                       android:drawablePadding="8dp"
+                       android:background="@color/white"
+                       android:buttonTint="@color/black"/>
+
+                   <!-- Phương thức thanh toán bằng thẻ ngân hàng -->
+                   <RadioButton
+                       android:id="@+id/rbCard"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="Momo"
+                       android:textSize="20sp"
+                       android:drawableLeft="@drawable/momo"
+                       android:drawablePadding="8dp"
+                       android:background="@color/white"
+                       android:buttonTint="@color/black"/>
+
+               </RadioGroup>
+
+           </LinearLayout>
+       </LinearLayout>
+   </ScrollView>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Xác nhận và Thanh toán"
-        android:textSize="18sp"
-        android:layout_marginTop="10dp"/>
+        android:paddingBottom="10dp"
+        android:paddingHorizontal="10dp"
+        android:elevation="2dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvTotalCheckoutPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tổng tiền: 0 đ"
+            android:textColor="@color/red"
+            android:layout_gravity="end"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:paddingTop="10dp"/>
+
+        <Button
+            android:id="@+id/btnConfirmPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Xác nhận và Thanh toán"
+            android:textSize="18sp"
+            android:backgroundTint="@color/color_main"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
 </LinearLayout>

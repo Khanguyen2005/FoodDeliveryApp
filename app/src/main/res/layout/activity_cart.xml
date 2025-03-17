@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="16dp">
 
     <TextView
@@ -12,6 +13,8 @@
         android:text="Giỏ hàng"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:textColor="@color/color_main"
+        android:layout_gravity="center"
         android:paddingBottom="10dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -26,8 +29,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tổng tiền: 0 đ"
-        android:textSize="18sp"
+        android:textSize="22sp"
         android:textStyle="bold"
+        android:textColor="@color/red"
+        android:layout_gravity="end"
         android:paddingTop="10dp"/>
 
     <Button
@@ -36,5 +41,6 @@
         android:layout_height="wrap_content"
         android:text="Thanh toán"
         android:textSize="18sp"
+        android:backgroundTint="@color/color_main"
         android:layout_marginTop="10dp"/>
 </LinearLayout>

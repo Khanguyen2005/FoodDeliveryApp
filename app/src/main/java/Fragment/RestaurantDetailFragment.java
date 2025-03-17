@@ -2,6 +2,7 @@ package Fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.animation.ObjectAnimator;
@@ -36,7 +37,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ltmb.ltmobile.BottomSheetAddTopping;
+import com.ltmb.ltmobile.CartActivity;
 import com.ltmb.ltmobile.R;
+import com.ltmb.ltmobile.RestaurantActivity;
+import com.ltmb.ltmobile.services.CartDatabaseHelper;
 import com.ltmb.ltmobile.services.DiscountService;
 import com.ltmb.ltmobile.services.RestaurantManagement;
 
@@ -45,6 +49,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Adapter.CartAdapter;
+import Adapter.CartItem;
 import Adapter.Category;
 import Adapter.CategoryAdapter;
 import Adapter.Discount;
@@ -126,6 +132,15 @@ public class RestaurantDetailFragment extends Fragment {
         scrollView = view.findViewById(R.id.scrollview);
         headerLayout = view.findViewById(R.id.layoutBtn);
         rcvCate = view.findViewById(R.id.rcvCate);
+
+        Button btnCart = view.findViewById(R.id.btnCart);
+        btnCart.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), CartActivity.class);
+            intent.putExtra("restaurant_id", restaurantId); // Truyền ID nhà hàng
+            startActivity(intent);
+        });
+
+        Log.d("RestaurantDetail", "restaurantId: " + restaurantId);
 
         txtName.setText(name);
         txtStar.setText(String.format("⭐ %.1f", star)); // Hiển thị 1 số thập phân

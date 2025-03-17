@@ -1,6 +1,7 @@
 package Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ public class OrderHistoryFragment extends Fragment {
                     orderList.clear();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String restaurantId = doc.getString("restaurantId");
-                        double totalPrice = doc.getDouble("totalPrice"); // Đổi sang getDouble()
+                        double totalPrice = doc.getDouble("totalPrice");
 
                         List<Map<String, Object>> itemsData = (List<Map<String, Object>>) doc.get("items");
                         List<OrderItemModel> orderItems = new ArrayList<>();
@@ -83,12 +84,21 @@ public class OrderHistoryFragment extends Fragment {
                             }
                         }
 
-                        orderList.add(new OrderModel(user.getUid(), restaurantId, totalPrice, orderItems));
+                        // Truy vấn tên nhà hàng từ restaurantId
+                        firestore.collection("Restaurants").document(restaurantId).get()
+                                .addOnSuccessListener(restaurantDoc -> {
+                                    String restaurantName = restaurantDoc.getString("name");
+                                    Log.d("OrderHistory", "Restaurant Name: " + restaurantName);
+                                    orderList.add(new OrderModel(user.getUid(), restaurantId, restaurantName, totalPrice, orderItems));
+                                    adapter.notifyDataSetChanged();
+                                })
+                                .addOnFailureListener(e -> {
+                                    orderList.add(new OrderModel(user.getUid(), restaurantId, "Không xác định", totalPrice, orderItems));
+                                    adapter.notifyDataSetChanged();
+                                });
                     }
-                    adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Lỗi khi lấy dữ liệu!", Toast.LENGTH_SHORT).show());
     }
-
 
 }
