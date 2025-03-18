@@ -147,13 +147,13 @@ public class RestaurantDetailFragment extends Fragment {
         txtEvaluate.setText(String.format("%.0f đánh giá", evaluate)); // Hiển thị số nguyên
         txtEvaluate.setOnClickListener(v -> {
             // Tạo một instance của ReviewFragment
-            ReviewFragment reviewFragment = new ReviewFragment();
+            RestaurantReviewsFragment RestaurantReviewsFragment = new RestaurantReviewsFragment();
 
             // Lấy FragmentManager để bắt đầu giao dịch
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
 
             // Thay thế fragment hiện tại bằng ReviewFragment và thêm vào back stack
-            transaction.replace(R.id.frame_layout_res, reviewFragment);
+            transaction.replace(R.id.frame_layout_res, RestaurantReviewsFragment);
             transaction.addToBackStack(null); // Cho phép quay lại fragment trước đó
             transaction.commit();
         });

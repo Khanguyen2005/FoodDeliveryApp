@@ -19,6 +19,7 @@
         android:orientation="vertical"
         android:background="@android:color/transparent">
 
+        <!-- Phần thông tin cá nhân -->
         <LinearLayout
             android:layout_marginTop="30dp"
             android:layout_width="match_parent"
@@ -62,6 +63,7 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Các nút chức năng -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,17 +97,21 @@
                 android:drawableTint="@color/gray"
                 android:text="Đổi mật khẩu"/>
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
         <Button
             android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/gray"
-            android:gravity="start|center"
+            android:background="@android:color/transparent"
+            android:textColor="@color/red"
+            android:layout_gravity="center"
             android:textSize="20sp"
-            android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
-            android:drawableTint="@color/gray"
             android:text="Đăng xuất"/>
-
     </LinearLayout>
+
 </FrameLayout>

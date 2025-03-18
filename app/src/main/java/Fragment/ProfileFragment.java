@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.ltmb.ltmobile.ChangePasswordActivity;
 import com.ltmb.ltmobile.CheckoutActivity;
 import com.ltmb.ltmobile.EditProfileActivity;
 import com.ltmb.ltmobile.LoginSignUpActivity;
@@ -28,7 +29,7 @@ import java.util.Map;
 public class ProfileFragment extends Fragment {
 
     private TextView txtEmail, txtName, txtPhone;
-    private Button btnEditProfile, btnLogout;
+    private Button btnEditProfile, btnLogout, btnChangePassword;
     private FirebaseAuth auth;
     public ProfileFragment() {
         // Required empty public constructor
@@ -50,9 +51,14 @@ public class ProfileFragment extends Fragment {
         txtPhone = view.findViewById(R.id.txtPhone);
         btnEditProfile = view.findViewById(R.id.btnEditProfile);
         btnLogout = view.findViewById(R.id.btnLogout);
+        btnChangePassword = view.findViewById(R.id.btnChangePassword);
 
         auth = FirebaseAuth.getInstance();
 
+        btnChangePassword.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), ChangePasswordActivity.class);
+            startActivity(intent);
+        });
         btnEditProfile.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), EditProfileActivity.class);
             startActivity(intent);

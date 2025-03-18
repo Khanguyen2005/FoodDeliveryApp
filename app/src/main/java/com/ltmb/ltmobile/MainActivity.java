@@ -56,20 +56,17 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         Log.d("UID", "Saved UID to SharedPreferences: " + uid);
 
-        // Khởi tạo Fragment và truyền Bundle
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.setArguments(bundle);
 
-        // Truyền dữ liệu cho HomeFragment
         Bundle homeBundle = new Bundle();
-        homeBundle.putString("ADDRESS", address); // Chỉ truyền ADDRESS
+        homeBundle.putString("ADDRESS", address);
 
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.setArguments(homeBundle);
 
-        // Thêm Fragment vào MainActivity
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, profileFragment) // ID của container trong layout activity_main.xml
+                .replace(R.id.frame_layout, profileFragment)
                 .commit();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
