@@ -85,8 +85,8 @@ public class CartActivity extends AppCompatActivity {
 
     private void updateTotalPrice() {
         double totalPrice = dbHelper.getTotalPrice(currentRestaurantId);
-        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
-        String formattedPrice = formatter.format(totalPrice) + " đ";
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        String formattedPrice = formatter.format(totalPrice);
         tvTotalPrice.setText("Tổng tiền: " + formattedPrice);
 
     }

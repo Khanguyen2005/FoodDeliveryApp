@@ -26,6 +26,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (savedInstanceState == null) { // Chỉ mở Fragment nếu Activity vừa tạo
+            loadFragment(new HomeFragment()); // Mở HomeFragment mặc định
+        }
+
+        // Kiểm tra xem có intent nào yêu cầu mở HomeFragment không
+        if (getIntent() != null && "home".equals(getIntent().getStringExtra("openFragment"))) {
+            openHomeFragment();
+        }
+
         // Nhận dữ liệu từ Intent
         Intent intent = getIntent();
         String uid = intent.getStringExtra("UID");
@@ -67,9 +76,6 @@ public class MainActivity extends AppCompatActivity {
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.setArguments(homeBundle);
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, profileFragment)
-                .commit();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -103,6 +109,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         updateRestaurantReviews();
+    }
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragment)
+                .commit();
+    }
+    private void openHomeFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_layout, new HomeFragment()) // Thay R.id.fragment_container bằng ID container của bạn
+                .commit();
     }
     private void updateRestaurantReviews() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

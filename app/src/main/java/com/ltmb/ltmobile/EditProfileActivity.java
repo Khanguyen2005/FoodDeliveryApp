@@ -36,6 +36,9 @@ public class EditProfileActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.edtPhone);
         edtAddress = findViewById(R.id.edtAddress);
         btnSave = findViewById(R.id.btnSave);
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
+
 
         // Khởi tạo Firestore
         db = FirebaseFirestore.getInstance();

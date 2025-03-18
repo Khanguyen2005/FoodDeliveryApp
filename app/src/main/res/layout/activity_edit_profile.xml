@@ -10,75 +10,96 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:padding="10dp"
+        android:paddingTop="20dp"
         android:orientation="vertical">
-        <TextView
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:drawableLeft="@drawable/arrow_sm_left_svgrepo_com"
+                android:backgroundTint="@color/white"
+                android:background="@android:color/transparent"
+                android:padding="15dp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textColor="@color/color_main"
+                android:text = "Chỉnh sửa thông tin cá nhân"/>
+        </FrameLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginBottom="50dp"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/color_main"
-            android:text = "Chỉnh sửa thông tin cá nhân"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/gray"
-            android:text="Họ tên"/>
-        <EditText
-            android:id="@+id/edtName"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:padding="5dp"
-            android:background="@drawable/rounded_corner"
-            android:backgroundTint="#E5EAEF"
-            android:hint="Tên"
-            android:inputType="textPersonName" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/gray"
-            android:text="Số điện thoại"/>
-        <EditText
-            android:id="@+id/edtPhone"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:padding="5dp"
-            android:background="@drawable/rounded_corner"
-            android:backgroundTint="#E5EAEF"
-            android:hint="Số điện thoại"
-            android:inputType="phone" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/gray"
-            android:text="Địa chỉ"/>
-        <EditText
-            android:id="@+id/edtAddress"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:padding="5dp"
-            android:background="@drawable/rounded_corner"
-            android:backgroundTint="#E5EAEF"
-            android:hint="Địa chỉ"
-            android:inputType="textPostalAddress" />
+            android:padding="10dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/gray"
+                android:text="Họ tên"/>
+            <EditText
+                android:id="@+id/edtName"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:padding="5dp"
+                android:background="@drawable/rounded_corner"
+                android:backgroundTint="#E5EAEF"
+                android:hint="Tên"
+                android:inputType="textPersonName" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/gray"
+                android:text="Số điện thoại"/>
+            <EditText
+                android:id="@+id/edtPhone"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:padding="5dp"
+                android:background="@drawable/rounded_corner"
+                android:backgroundTint="#E5EAEF"
+                android:hint="Số điện thoại"
+                android:inputType="phone" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/gray"
+                android:layout_marginTop="10dp"
+                android:text="Địa chỉ"/>
+            <EditText
+                android:id="@+id/edtAddress"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:padding="5dp"
+                android:background="@drawable/rounded_corner"
+                android:backgroundTint="#E5EAEF"
+                android:hint="Địa chỉ"
+                android:inputType="textPostalAddress" />
 
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Lưu"
-            android:textSize="20sp"
-            android:backgroundTint="@color/color_main"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="16dp"/>
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lưu"
+                android:textSize="20sp"
+                android:backgroundTint="@color/color_main"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

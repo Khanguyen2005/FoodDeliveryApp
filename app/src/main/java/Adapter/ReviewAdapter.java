@@ -3,12 +3,14 @@ package Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,7 +36,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review, parent, false);
         return new ReviewViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
         Review review = reviewList.get(position);
@@ -69,7 +70,20 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         } else {
             holder.tvUserName.setText("Người dùng: Không xác định");
         }
+
+        // Load ảnh bằng Glide
+        String imageUrl = review.getImageUrl(); // Lấy URL từ đối tượng Review
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(imageUrl)
+                    .placeholder(R.mipmap.ic_launcher) // Ảnh tạm khi đang tải
+                    .error(R.mipmap.ic_launcher) // Ảnh hiển thị nếu lỗi
+                    .into(holder.imgReview);
+        } else {
+            holder.imgReview.setImageResource(R.mipmap.ic_launcher); // Ảnh mặc định nếu không có ảnh
+        }
     }
+
 
     @Override
     public int getItemCount() {
@@ -79,13 +93,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     public class ReviewViewHolder extends RecyclerView.ViewHolder {
         TextView tvComment, tvUserName, tvTimestamp;
         RatingBar ratingBar;
+        ImageView imgReview; // Thêm ImageView
 
         public ReviewViewHolder(@NonNull View itemView) {
             super(itemView);
             tvComment = itemView.findViewById(R.id.tvComment);
-            tvUserName = itemView.findViewById(R.id.tvUserId); // Đổi ID trong XML thành `tvUserName`
+            tvUserName = itemView.findViewById(R.id.tvUserId);
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
             ratingBar = itemView.findViewById(R.id.ratingBar);
+            imgReview = itemView.findViewById(R.id.imgReview); // Ánh xạ ImageView
         }
     }
+
 }

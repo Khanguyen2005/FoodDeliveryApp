@@ -17,6 +17,7 @@
             android:background="@color/white"
             android:padding="4dp">
             <Button
+                android:id="@+id/btnBack"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"

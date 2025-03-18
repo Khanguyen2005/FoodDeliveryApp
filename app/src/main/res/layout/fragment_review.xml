@@ -3,40 +3,75 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="16dp">
 
-    <EditText
-        android:id="@+id/edtComment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập đánh giá của bạn"
-        android:inputType="textMultiLine" />
-    <ImageView
-        android:id="@+id/imgReview"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher" />
-    <Button
-        android:id="@+id/btnChooseImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chọn ảnh" />
+        android:gravity="center"
+        android:orientation="vertical">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:padding="5dp"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:paddingLeft="15dp"
+                android:drawableLeft="@drawable/arrow_sm_left_svgrepo_com"/>
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đánh giá đơn hàng"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/color_main"
+                android:layout_gravity="center"
+                android:paddingBottom="10dp"/>
+        </FrameLayout>
+        <ImageView
+            android:id="@+id/imgReview"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/example" />
+        <Button
+            android:id="@+id/btnChooseImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:text="Chọn ảnh" />
 
-    <RatingBar
-        android:id="@+id/ratingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:numStars="5"
-        android:progressTint="@color/color_main"
-        android:secondaryProgressTint="@color/color_main"
-        android:backgroundTint="@color/gray"
-        android:stepSize="0.5" />
-
-    <Button
-        android:id="@+id/btnSubmitReview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Gửi Đánh Giá" />
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:progressTint="@color/color_main"
+            android:secondaryProgressTint="@color/color_main"
+            android:backgroundTint="@color/gray"
+            android:stepSize="0.5" />
+        <EditText
+            android:id="@+id/edtComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner"
+            android:backgroundTint="#E5EAEF"
+            android:padding="10dp"
+            android:hint="Nhập đánh giá của bạn"
+            android:inputType="textMultiLine" />
+        <Button
+            android:id="@+id/btnSubmitReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/color_main"
+            android:layout_marginTop="10dp"
+            android:text="Gửi Đánh Giá" />
+    </LinearLayout>
 
 </LinearLayout>

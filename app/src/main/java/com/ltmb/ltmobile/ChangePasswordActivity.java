@@ -32,7 +32,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
         editNewPassword = findViewById(R.id.editNewPassword);
         editConfirmPassword = findViewById(R.id.editConfirmPassword);
         btnChangePassword = findViewById(R.id.btnChangePassword);
-
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
         mAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Đang cập nhật...");

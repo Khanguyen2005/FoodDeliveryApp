@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -96,6 +98,9 @@ public class ReviewFragment extends Fragment {
         btnChooseImage = view.findViewById(R.id.btnChooseImage); // Ánh xạ nút chọn ảnh
         imgReview = view.findViewById(R.id.imgReview); // Ánh xạ ImageView để hiển thị ảnh
         db = FirebaseFirestore.getInstance();
+
+        Button btnBack = view.findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> requireActivity().onBackPressed());
 
         // Lấy userId từ FirebaseAuth
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -243,11 +248,22 @@ public class ReviewFragment extends Fragment {
                 .document(restaurantId)
                 .collection("FoodReviews")
                 .add(reviewData)
-                .addOnSuccessListener(documentReference ->
-                        Toast.makeText(getContext(), "Đánh giá thành công!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Lỗi khi gửi đánh giá!", Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(getContext(), "Đánh giá thành công!", Toast.LENGTH_SHORT).show();
+
+                    // Trả về MainActivity và mở HomeFragment
+                    Intent intent = new Intent(requireActivity(), MainActivity.class);
+                    intent.putExtra("openFragment", "home"); // Truyền dữ liệu để mở HomeFragment
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    requireActivity().finish(); // Đóng Activity hiện tại
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Lỗi khi gửi đánh giá!", Toast.LENGTH_SHORT).show();
+                });
     }
+
+
 
     private void uploadImageToImgur(Uri imageUri, ImgurUploadCallback callback) {
         new Thread(() -> {
