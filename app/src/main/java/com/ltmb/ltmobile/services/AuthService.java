@@ -2,6 +2,8 @@ package com.ltmb.ltmobile.services;
 
 import android.util.Log;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -127,4 +129,64 @@ public class AuthService {
     public interface AuthCallback {
         void onComplete(boolean success, String message);
     }
+    /**
+     * Đổi mật khẩu người dùng, yêu cầu nhập lại mật khẩu hiện tại để xác thực.
+     * @param currentPassword Mật khẩu hiện tại của người dùng
+     * @param newPassword Mật khẩu mới
+     * @param callback Callback kết quả
+     */
+    public void changePassword(String currentPassword, String newPassword, AuthCallback callback) {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user == null) {
+            callback.onComplete(false, "Người dùng chưa đăng nhập.");
+            return;
+        }
+
+        if (!isValidPassword(newPassword)) {
+            callback.onComplete(false, "Mật khẩu phải có ít nhất 8 ký tự, 1 chữ cái in hoa và 1 ký tự đặc biệt.");
+            return;
+        }
+
+        // Xác thực lại người dùng trước khi đổi mật khẩu
+        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), currentPassword);
+        user.reauthenticate(credential)
+                .addOnCompleteListener(authTask -> {
+                    if (authTask.isSuccessful()) {
+                        // Xác thực thành công, tiến hành đổi mật khẩu
+                        user.updatePassword(newPassword)
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        callback.onComplete(true, "Đổi mật khẩu thành công.");
+                                    } else {
+                                        callback.onComplete(false, "Đổi mật khẩu thất bại: " + task.getException().getMessage());
+                                    }
+                                });
+                    } else {
+                        callback.onComplete(false, "Xác thực thất bại: Mật khẩu hiện tại không đúng.");
+                    }
+                });
+    }
+
+
+    /**
+     * Gửi email khôi phục mật khẩu
+     * @param email Địa chỉ email của người dùng
+     * @param callback Callback kết quả
+     */
+    public void resetPassword(String email, AuthCallback callback) {
+        if (!isValidEmail(email)) {
+            callback.onComplete(false, "Email không hợp lệ.");
+            return;
+        }
+
+        firebaseAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onComplete(true, "Email đặt lại mật khẩu đã được gửi.");
+                    } else {
+                        callback.onComplete(false, "Không thể gửi email khôi phục: " + task.getException().getMessage());
+                    }
+                });
+    }
+
 }
