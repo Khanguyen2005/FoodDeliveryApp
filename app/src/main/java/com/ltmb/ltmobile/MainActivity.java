@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import Fragment.ProfileFragment;
 import Fragment.HomeFragment;
@@ -99,5 +101,43 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+
+        updateRestaurantReviews();
     }
+    private void updateRestaurantReviews() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("Restaurants").get().addOnSuccessListener(restaurants -> {
+            for (QueryDocumentSnapshot restaurantDoc : restaurants) {
+                String restaurantId = restaurantDoc.getId();
+                Log.d("Firestore", "Đang xử lý nhà hàng: " + restaurantId); // Kiểm tra ID nhà hàng
+
+                db.collection("Restaurants")
+                        .document(restaurantId)
+                        .collection("FoodReviews")
+                        .get()
+                        .addOnSuccessListener(reviews -> {
+                            int reviewCount = reviews.size();
+                            Log.d("Firestore", "Nhà hàng " + restaurantId + " có " + reviewCount + " đánh giá"); // Kiểm tra số review
+
+                            db.collection("Restaurants")
+                                    .document(restaurantId)
+                                    .update("evaluate", reviewCount)
+                                    .addOnSuccessListener(aVoid ->
+                                            Log.d("Firestore", "Cập nhật thành công evaluate cho " + restaurantId)
+                                    )
+                                    .addOnFailureListener(e ->
+                                            Log.e("Firestore", "Lỗi khi cập nhật evaluate: " + e.getMessage(), e)
+                                    );
+                        })
+                        .addOnFailureListener(e ->
+                                Log.e("Firestore", "Lỗi khi lấy danh sách review của " + restaurantId + ": " + e.getMessage(), e)
+                        );
+            }
+        }).addOnFailureListener(e ->
+                Log.e("Firestore", "Lỗi khi lấy danh sách nhà hàng: " + e.getMessage(), e)
+        );
+    }
+
+
 }

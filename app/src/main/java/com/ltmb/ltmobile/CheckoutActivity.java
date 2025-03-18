@@ -30,7 +30,7 @@ import Adapter.CheckoutAdapter;
 public class CheckoutActivity extends AppCompatActivity {
     private RecyclerView recyclerViewCheckout;
     private TextView tvTotalCheckoutPrice,tvUserAddress;
-    private Button btnConfirmPayment;
+    private Button btnConfirmPayment,btnBack;
     private CartDatabaseHelper dbHelper;
     private CheckoutAdapter checkoutAdapter;
 
@@ -45,6 +45,9 @@ public class CheckoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
         tvUserAddress = findViewById(R.id.txtAddress);
         layoutAddress = findViewById(R.id.layoutAddress);
+        btnBack = findViewById(R.id.btnBack);
+
+        btnBack.setOnClickListener(v -> finish());
 
         layoutAddress.setOnClickListener(v -> {
             Intent intent = new Intent(CheckoutActivity.this, EditProfileActivity.class);

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ltmb.ltmobile.R;
 import com.ltmb.ltmobile.RestaurantActivity;
 
@@ -58,7 +59,7 @@ public class    RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter
         Restaurant res = listRes.get(position);
         if (res == null) return;
 
-        // Kiểm tra context tránh lỗi Glide
+        // Load ảnh nhà hàng
         if (context != null && res.getImageUrl() != null && !res.getImageUrl().isEmpty()) {
             Glide.with(context)
                     .load(res.getImageUrl())
@@ -67,10 +68,30 @@ public class    RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter
             holder.imgRes.setImageResource(R.mipmap.ic_launcher);
         }
 
-        // Set dữ liệu với kiểm tra null
         holder.nameRes.setText(res.getName() != null ? res.getName() : "Không có tên");
-        holder.evaluateRes.setText(res.getEvaluateRes() != null ? String.valueOf(res.getEvaluateRes()) + " đánh giá" : "0 đánh giá");
         holder.starRes.setText(String.valueOf(res.getStarRes() != null ? res.getStarRes() : 5.0));
+
+        // Kiểm tra nếu đã có số lượng đánh giá thì hiển thị ngay, nếu chưa thì lấy từ Firestore
+        if (res.getEvaluateRes() != null) {
+            holder.evaluateRes.setText(res.getEvaluateRes() + " đánh giá");
+        } else {
+            holder.evaluateRes.setText("Đang tải...");
+
+            // Truy vấn Firestore để lấy số lượng review
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("reviews")
+                    .whereEqualTo("restaurantId", res.getId()) // Lọc theo ID nhà hàng
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            int reviewCount = task.getResult().size();
+                            res.setEvaluateRes(reviewCount); // Cập nhật số lượng đánh giá vào đối tượng
+                            holder.evaluateRes.setText(reviewCount + " đánh giá");
+                        } else {
+                            holder.evaluateRes.setText("0 đánh giá");
+                        }
+                    });
+        }
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, RestaurantActivity.class);
@@ -83,6 +104,7 @@ public class    RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter
             context.startActivity(intent);
         });
     }
+
 
     @Override
     public int getItemCount() {

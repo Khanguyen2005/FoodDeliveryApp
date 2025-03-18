@@ -5,17 +5,28 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <TextView
-        android:id="@+id/tvCheckoutTitle"
-        android:layout_width="wrap_content"
-        android:paddingTop="10dp"
-        android:layout_height="wrap_content"
-        android:text="Xác nhận thanh toán"
-        android:textColor="@color/color_main"
-        android:layout_gravity="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:paddingBottom="10dp"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:padding="5dp"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:paddingLeft="15dp"
+            android:drawableLeft="@drawable/arrow_sm_left_svgrepo_com"/>
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Xác nhận thanh toán"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/color_main"
+            android:layout_gravity="center"
+            android:paddingBottom="10dp"/>
+    </FrameLayout>
 
    <ScrollView
        android:layout_width="match_parent"
@@ -125,6 +136,7 @@
                        android:layout_height="wrap_content"
                        android:text="Tiền mặt"
                        android:textSize="20sp"
+                       android:checked="true"
                        android:drawableLeft="@drawable/cash_svgrepo_com"
                        android:drawablePadding="8dp"
                        android:background="@color/white"

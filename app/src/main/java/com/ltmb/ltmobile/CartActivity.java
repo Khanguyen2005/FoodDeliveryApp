@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ltmb.ltmobile.services.CartDatabaseHelper;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import Adapter.CartAdapter;
 import Adapter.CartItem;
@@ -22,7 +24,7 @@ import Adapter.CartItem;
 public class CartActivity extends AppCompatActivity {
     private RecyclerView recyclerViewCart;
     private TextView tvTotalPrice;
-    private Button btnCheckout;
+    private Button btnCheckout,btnBack;
     private CartDatabaseHelper dbHelper;
     private CartAdapter cartAdapter;
     private List<CartItem> cartItemList;
@@ -36,7 +38,10 @@ public class CartActivity extends AppCompatActivity {
         recyclerViewCart = findViewById(R.id.recyclerViewCart);
         tvTotalPrice = findViewById(R.id.tvTotalPrice);
         btnCheckout = findViewById(R.id.btnCheckout);
+        btnBack = findViewById(R.id.btnBack);
         dbHelper = new CartDatabaseHelper(this);
+
+        btnBack.setOnClickListener(v -> finish());
 
         // Lấy ID nhà hàng từ Intent
         currentRestaurantId = getIntent().getStringExtra("restaurant_id");
@@ -80,7 +85,10 @@ public class CartActivity extends AppCompatActivity {
 
     private void updateTotalPrice() {
         double totalPrice = dbHelper.getTotalPrice(currentRestaurantId);
-        tvTotalPrice.setText("Tổng tiền: " + totalPrice + " đ");
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        String formattedPrice = formatter.format(totalPrice) + " đ";
+        tvTotalPrice.setText("Tổng tiền: " + formattedPrice);
+
     }
 
     private void showAlert(String title, String message) {
