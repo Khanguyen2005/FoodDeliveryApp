@@ -18,11 +18,20 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +44,8 @@ import android.widget.Toast;
 
 import com.ltmb.ltmobile.MainActivity;
 import com.ltmb.ltmobile.R;
+
+import org.json.JSONObject;
 
 public class ReviewFragment extends Fragment {
     //code khá thêm
@@ -138,21 +149,43 @@ public class ReviewFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_GALLERY && data != null && data.getData() != null) {
                 // Ảnh từ thư viện
-                Uri selectedImageUri = data.getData();
-                imgReview.setImageURI(selectedImageUri);
+                imageUri = data.getData();
+                imgReview.setImageURI(imageUri);
+                Log.d("IMGUR_IMAGE_SELECTED", "Image selected from gallery: " + imageUri.toString());
             } else if (requestCode == REQUEST_CAMERA && data != null) {
-                // Chụp ảnh từ Camera, lấy ảnh dạng Bitmap
+                // Ảnh từ Camera, lấy ảnh dạng Bitmap
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 if (photo != null) {
                     imgReview.setImageBitmap(photo);
+
+                    // 👉 Tạo URI giả để upload lên Imgur
+                    imageUri = getImageUri(photo);
+
+                    if (imageUri != null) {
+                        Log.d("IMGUR_IMAGE_CAPTURED", "Image captured: " + imageUri.toString());
+                    } else {
+                        Log.e("IMGUR_IMAGE_ERROR", "Không thể tạo URI cho ảnh.");
+                        Toast.makeText(getContext(), "Không thể tạo URI cho ảnh!", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
+                    Log.e("IMGUR_IMAGE_ERROR", "Không lấy được ảnh từ camera!");
                     Toast.makeText(getContext(), "Không lấy được ảnh từ camera!", Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
 
-
+    private Uri getImageUri(Bitmap bitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(
+                getActivity().getContentResolver(),
+                bitmap,
+                "IMG_" + System.currentTimeMillis(),
+                null
+        );
+        return Uri.parse(path);
+    }
 
 
 
@@ -167,12 +200,44 @@ public class ReviewFragment extends Fragment {
             return;
         }
 
-        // Tạo đối tượng đánh giá
+        if (imageUri != null) {
+            // Nếu có ảnh, upload lên Imgur trước
+            uploadImageToImgur(imageUri, new ImgurUploadCallback() {
+                @Override
+                public void onSuccess(String imageUrl) {
+                    Log.d("IMGUR_UPLOAD_SUCCESS", "Direct Image URL: " + imageUrl);
+                    saveReviewToFirestore(comment, rating, timestamp, imageUrl);
+                }
+
+                @Override
+                public void onFailure(String error) {
+                    Log.e("IMGUR_UPLOAD_ERROR", "Upload failed: " + error);
+                    Toast.makeText(getContext(), "Lỗi khi tải ảnh lên Imgur: " + error, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // Nếu không có ảnh, chỉ lưu đánh giá vào Firestore
+            Log.d("IMGUR_UPLOAD_NO_IMAGE", "No image selected, saving review only.");
+            saveReviewToFirestore(comment, rating, timestamp, null);
+        }
+    }
+
+
+    private void saveReviewToFirestore(String comment, int rating, Timestamp timestamp, String imageUrl) {
+        Log.d("IMGUR_UPLOAD_CHECK", "Image URL received: " + imageUrl);
+
         Map<String, Object> reviewData = new HashMap<>();
         reviewData.put("comment", comment);
         reviewData.put("rating", rating);
         reviewData.put("timestamp", timestamp);
         reviewData.put("userId", userId);
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            reviewData.put("imageUrl", imageUrl);
+            Log.d("IMGUR_UPLOAD_SUCCESS", "Image URL saved to Firestore: " + imageUrl);
+        } else {
+            Log.d("IMGUR_UPLOAD_ERROR", "No image URL to save in Firestore");
+        }
 
         db.collection("Restaurants")
                 .document(restaurantId)
@@ -183,4 +248,86 @@ public class ReviewFragment extends Fragment {
                 .addOnFailureListener(e ->
                         Toast.makeText(getContext(), "Lỗi khi gửi đánh giá!", Toast.LENGTH_SHORT).show());
     }
+
+    private void uploadImageToImgur(Uri imageUri, ImgurUploadCallback callback) {
+        new Thread(() -> {
+            try {
+                // Đọc dữ liệu ảnh từ Uri
+                InputStream inputStream = getActivity().getContentResolver().openInputStream(imageUri);
+                byte[] imageData = getBytes(inputStream);
+
+                // Imgur API endpoint
+                String uploadUrl = "https://api.imgur.com/3/image";
+                String clientId = "41a425bcd5bf284"; // Thay bằng Client ID của bạn
+
+                // Mở kết nối HTTP
+                HttpURLConnection connection = (HttpURLConnection) new URL(uploadUrl).openConnection();
+                connection.setDoOutput(true);
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Authorization", "Client-ID " + clientId);
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundary");
+
+                // Xây dựng Multipart FormData
+                DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                outputStream.writeBytes("------WebKitFormBoundary\r\n");
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"image\"; filename=\"upload.jpg\"\r\n");
+                outputStream.writeBytes("Content-Type: image/jpeg\r\n\r\n");
+                outputStream.write(imageData);
+                outputStream.writeBytes("\r\n------WebKitFormBoundary--\r\n");
+                outputStream.flush();
+                outputStream.close();
+
+                // Kiểm tra phản hồi từ server
+                int responseCode = connection.getResponseCode();
+                InputStream responseStream = (responseCode == 200) ? connection.getInputStream() : connection.getErrorStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(responseStream));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                // Xử lý JSON response
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                if (jsonResponse.getBoolean("success")) {
+                    String imageUrl = jsonResponse.getJSONObject("data").getString("link");
+
+                    // Chuyển đổi sang direct link nếu cần
+                    if (imageUrl.contains("imgur.com") && !imageUrl.contains("i.imgur.com")) {
+                        imageUrl = imageUrl.replace("imgur.com", "i.imgur.com");
+                    }
+
+                    String finalImageUrl = imageUrl;
+                    getActivity().runOnUiThread(() -> callback.onSuccess(finalImageUrl));
+                } else {
+                    getActivity().runOnUiThread(() -> callback.onFailure("Imgur upload failed: " + response.toString()));
+                }
+            } catch (Exception e) {
+                getActivity().runOnUiThread(() -> callback.onFailure("Error uploading to Imgur: " + e.getMessage()));
+            }
+        }).start();
+    }
+
+    private byte[] getBytes(InputStream inputStream) throws Exception {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+
+        return byteBuffer.toByteArray();
+    }
+
+
+
+
+    interface ImgurUploadCallback {
+        void onSuccess(String imageUrl);
+        void onFailure(String error);
+    }
+
 }
