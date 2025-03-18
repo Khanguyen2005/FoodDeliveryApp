@@ -6,10 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- QUYỀN TRUY CẬP FILES & ẢNH (API 33+) -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <!-- QUYỀN TRUY CẬP MEDIA (API 33+) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
     <!-- QUYỀN ĐỌC & GHI NGOẠI VI (CHỈ CẦN CHO API < 33) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -20,7 +18,7 @@
     <!-- QUYỀN CAMERA -->
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <!-- CHO PHÉP DÙNG CAMERA NHƯNG KHÔNG BẮT BUỘC -->
+    <!-- HỖ TRỢ CAMERA KHÔNG BẮT BUỘC -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
@@ -45,7 +43,7 @@
         <activity android:name=".RestaurantActivity" android:exported="false" />
         <activity android:name=".MainActivity" android:exported="false" />
 
-        <!-- ACTIVITY ĐĂNG NHẬP - CHO PHÉP EXPORT -->
+        <!-- ACTIVITY ĐĂNG NHẬP (CHO PHÉP EXPORT ĐỂ KHỞI ĐỘNG ỨNG DỤNG) -->
         <activity android:name=".LoginSignUpActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

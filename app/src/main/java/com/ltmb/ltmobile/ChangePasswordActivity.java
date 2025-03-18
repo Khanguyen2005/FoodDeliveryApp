@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ltmb.ltmobile.services.AuthService;
 
 public class ChangePasswordActivity extends AppCompatActivity {
 
@@ -26,20 +27,17 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
-        // Ánh xạ các view
+        // Ánh xạ view
         editOldPassword = findViewById(R.id.editOldPassword);
         editNewPassword = findViewById(R.id.editNewPassword);
         editConfirmPassword = findViewById(R.id.editConfirmPassword);
         btnChangePassword = findViewById(R.id.btnChangePassword);
 
-        // Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
-        // ProgressDialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Đang cập nhật...");
 
-        // Sự kiện nhấn nút đổi mật khẩu
+        // Xử lý sự kiện đổi mật khẩu
         btnChangePassword.setOnClickListener(v -> changePassword());
     }
 
@@ -59,31 +57,29 @@ public class ChangePasswordActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null && user.getEmail() != null) {
-            progressDialog.show();
-
-            // Xác thực lại người dùng bằng mật khẩu cũ
-            user.reauthenticate(EmailAuthProvider.getCredential(user.getEmail(), oldPassword))
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Cập nhật mật khẩu mới
-                            user.updatePassword(newPassword)
-                                    .addOnCompleteListener(updateTask -> {
-                                        progressDialog.dismiss();
-                                        if (updateTask.isSuccessful()) {
-                                            Toast.makeText(this, "Đổi mật khẩu thành công!", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(this, MainActivity.class));
-                                            finish();
-                                        } else {
-                                            Toast.makeText(this, "Lỗi khi cập nhật mật khẩu", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        } else {
-                            progressDialog.dismiss();
-                            Toast.makeText(this, "Mật khẩu cũ không đúng!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+        // Kiểm tra mật khẩu hợp lệ
+        if (!isValidPassword(newPassword)) {
+            Toast.makeText(this, "Mật khẩu phải có ít nhất 8 ký tự, 1 chữ cái in hoa và 1 ký tự đặc biệt.", Toast.LENGTH_LONG).show();
+            return;
         }
+
+        // Gọi hàm changePassword()
+        progressDialog.show();
+        AuthService authService = new AuthService();
+        authService.changePassword(oldPassword, newPassword, (success, message) -> {
+            progressDialog.dismiss();
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            if (success) {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            }
+        });
+    }
+
+    // Hàm kiểm tra mật khẩu hợp lệ
+    private boolean isValidPassword(String password) {
+        return password.length() >= 8 &&
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[!@#$%^&*(),.?\":{}|<>].*");
     }
 }
