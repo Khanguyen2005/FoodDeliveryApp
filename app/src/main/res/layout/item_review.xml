@@ -14,6 +14,12 @@
         android:text="Khách hàng: "
         android:textStyle="bold"
         android:textSize="14sp" />
+    <ImageView
+        android:id="@+id/imgReview"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        />
     <RatingBar
         android:id="@+id/ratingBar"
         android:layout_width="wrap_content"

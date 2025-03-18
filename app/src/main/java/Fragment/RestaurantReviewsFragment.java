@@ -1,16 +1,16 @@
 package Fragment;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.ltmb.ltmobile.R;
@@ -21,45 +21,22 @@ import java.util.List;
 import Adapter.Review;
 import Adapter.ReviewAdapter;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RestaurantReviewsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RestaurantReviewsFragment extends Fragment {
     private RecyclerView recyclerView;
     private ReviewAdapter reviewAdapter;
     private List<Review> reviewList;
     private FirebaseFirestore db;
-    private String restaurantId = "restaurant_id_1"; // ID của nhà hàng
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String restaurantId; // ID của nhà hàng
 
     public RestaurantReviewsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RestaurantReviewsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RestaurantReviewsFragment newInstance(String param1, String param2) {
+    // Phương thức khởi tạo fragment với restaurantId
+    public static RestaurantReviewsFragment newInstance(String restaurantId) {
         RestaurantReviewsFragment fragment = new RestaurantReviewsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString("restaurantId", restaurantId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,8 +45,7 @@ public class RestaurantReviewsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            restaurantId = getArguments().getString("restaurantId");
         }
     }
 
@@ -92,9 +68,11 @@ public class RestaurantReviewsFragment extends Fragment {
         } else {
             loadReviews();
         }
+        Log.d("RestaurantID", "restaurantId: " + restaurantId);
 
         return view;
     }
+
     private void loadReviews() {
         db.collection("Restaurants")
                 .document(restaurantId)  // ID nhà hàng
@@ -104,14 +82,15 @@ public class RestaurantReviewsFragment extends Fragment {
                     if (task.isSuccessful()) {
                         reviewList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Convert Firestore document thành đối tượng Review
-                            Review review = new Review(
-                                    document.getString("comment"),
-                                    document.getString("userId"),
-                                    document.getString("foodId"),
-                                    document.getLong("rating").intValue(), // Chuyển rating về int
-                                    document.getTimestamp("timestamp") // Lấy Timestamp
-                            );
+                            // Lấy dữ liệu từ Firestore
+                            String comment = document.getString("comment");
+                            String userId = document.getString("userId");
+                            String foodId = document.getString("foodId");
+                            int rating = document.getLong("rating").intValue(); // Chuyển rating về int
+                            Timestamp timestamp = document.getTimestamp("timestamp"); // Lấy Timestamp
+                            String imageUrl = document.getString("imageUrl"); // Lấy link ảnh
+
+                            Review review = new Review(comment, userId, foodId, rating, timestamp, imageUrl);
                             reviewList.add(review);
                         }
                         reviewAdapter.notifyDataSetChanged();
@@ -120,6 +99,4 @@ public class RestaurantReviewsFragment extends Fragment {
                     }
                 });
     }
-
-
 }

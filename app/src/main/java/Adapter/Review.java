@@ -3,19 +3,20 @@ package Adapter;
 import com.google.firebase.Timestamp;
 
 public class Review {
-    private String comment, userId, foodId;
+    private String comment, userId, foodId, imageUrl;
     private int rating;
     private Timestamp timestamp;
 
     public Review() {
     }
 
-    public Review(String comment, String userId, String foodId, int rating, Timestamp timestamp) {
+    public Review(String comment, String userId, String foodId, int rating, Timestamp timestamp, String imageUrl) {
         this.comment = comment;
         this.userId = userId;
         this.foodId = foodId;
         this.rating = rating;
         this.timestamp = timestamp;
+        this.imageUrl = imageUrl;
     }
 
     public String getComment() {
@@ -56,5 +57,13 @@ public class Review {
 
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
