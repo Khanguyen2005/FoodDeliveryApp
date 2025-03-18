@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- Thêm quyền INTERNET -->
+
+    <!-- QUYỀN TRUY CẬP INTERNET -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- QUYỀN TRUY CẬP FILES & ẢNH (API 33+) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+
+    <!-- QUYỀN ĐỌC & GHI NGOẠI VI (CHỈ CẦN CHO API < 33) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"/>
+
+    <!-- QUYỀN CAMERA -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- CHO PHÉP DÙNG CAMERA NHƯNG KHÔNG BẮT BUỘC -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -16,37 +32,23 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.LTMobile"
-        tools:targetApi="31">
-        <activity
-            android:name=".ChangePasswordActivity"
-            android:exported="false" />
-        <activity
-            android:name=".EditProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CheckoutActivity"
-            android:exported="false" />
-        <activity
-            android:name=".services.OrderSuccessActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CartActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CategoryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RestaurantActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginSignUpActivity"
-            android:exported="true">
+        tools:targetApi="35">
+
+        <!-- KHAI BÁO CÁC ACTIVITY -->
+        <activity android:name=".ForgotPasswordActivity" android:exported="false" />
+        <activity android:name=".ChangePasswordActivity" android:exported="false" />
+        <activity android:name=".EditProfileActivity" android:exported="false" />
+        <activity android:name=".CheckoutActivity" android:exported="false" />
+        <activity android:name=".services.OrderSuccessActivity" android:exported="false" />
+        <activity android:name=".CartActivity" android:exported="false" />
+        <activity android:name=".CategoryActivity" android:exported="false" />
+        <activity android:name=".RestaurantActivity" android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="false" />
+
+        <!-- ACTIVITY ĐĂNG NHẬP - CHO PHÉP EXPORT -->
+        <activity android:name=".LoginSignUpActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

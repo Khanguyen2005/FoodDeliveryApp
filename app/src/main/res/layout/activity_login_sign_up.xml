@@ -75,6 +75,12 @@
                     android:paddingLeft="10dp"
                     android:layout_marginBottom="10dp" />
 
+                <TextView
+                    android:id="@+id/txtForgotPass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="Quên mật khẩu ?"/>
                 <Button
                     android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
@@ -82,7 +88,7 @@
                     android:backgroundTint="@color/color_main"
                     android:text="Đăng nhập"
                     android:textSize="20sp"
-                    android:layout_marginTop="20dp" />
+                    android:layout_marginTop="10dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

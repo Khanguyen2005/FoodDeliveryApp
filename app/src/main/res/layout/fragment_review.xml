@@ -11,6 +11,17 @@
         android:layout_height="wrap_content"
         android:hint="Nhập đánh giá của bạn"
         android:inputType="textMultiLine" />
+    <ImageView
+        android:id="@+id/imgReview"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+    <Button
+        android:id="@+id/btnChooseImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn ảnh" />
 
     <RatingBar
         android:id="@+id/ratingBar"

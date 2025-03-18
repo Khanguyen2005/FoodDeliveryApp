@@ -27,7 +27,7 @@ public class LoginSignUpActivity extends AppCompatActivity {
     private Button btnRegister, btnLogin;
     private ProgressDialog progressDialog;
     private LinearLayout loginForm, signUpForm;
-    private TextView headerTitle;
+    private TextView headerTitle,txtForgotPassword;
     private EditText editTextName, editTextPhone, editTextAddress;
 
     @Override
@@ -60,6 +60,7 @@ public class LoginSignUpActivity extends AppCompatActivity {
             headerTitle = findViewById(R.id.header_title);
             TextView backToSignUpButton = findViewById(R.id.backToSignUp);
             TextView backToLoginButton = findViewById(R.id.backToLogin);
+            txtForgotPassword = findViewById(R.id.txtForgotPass);
 
             loginForm = findViewById(R.id.loginForm);
             signUpForm = findViewById(R.id.signUpForm);
@@ -88,6 +89,14 @@ public class LoginSignUpActivity extends AppCompatActivity {
             // Xử lý sự kiện chuyển giữa form đăng nhập và đăng ký
             backToSignUpButton.setOnClickListener(v -> switchToSignUp());
             backToLoginButton.setOnClickListener(v -> switchToLogin());
+
+            txtForgotPassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(LoginSignUpActivity.this, ForgotPasswordActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             // Xử lý đăng ký tài khoản
             btnRegister.setOnClickListener(v -> {
