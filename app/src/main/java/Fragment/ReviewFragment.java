@@ -1,8 +1,18 @@
 package Fragment;
 
+import static android.provider.MediaStore.ACTION_IMAGE_CAPTURE;
+
+import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -11,22 +21,36 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Toast;
+
+import com.ltmb.ltmobile.MainActivity;
 import com.ltmb.ltmobile.R;
 
 public class ReviewFragment extends Fragment {
+    //code khá thêm
+    private static final int REQUEST_GALLERY = 100;
+    private static final int REQUEST_CAMERA = 101;
     private EditText edtComment;
     private RatingBar ratingBar;
     private Button btnSubmitReview;
     private FirebaseFirestore db;
     private String restaurantId;
     private String userId;
+    private Button btnChooseImage;
+    private ImageView imgReview; // để hiển thị ảnh lên
+    private Uri imageUri; // Lưu URI ảnh chụp
+
+
 
     private static final String ARG_RESTAURANT_ID = "restaurantId";
 
@@ -58,6 +82,8 @@ public class ReviewFragment extends Fragment {
         edtComment = view.findViewById(R.id.edtComment);
         ratingBar = view.findViewById(R.id.ratingBar);
         btnSubmitReview = view.findViewById(R.id.btnSubmitReview);
+        btnChooseImage = view.findViewById(R.id.btnChooseImage); // Ánh xạ nút chọn ảnh
+        imgReview = view.findViewById(R.id.imgReview); // Ánh xạ ImageView để hiển thị ảnh
         db = FirebaseFirestore.getInstance();
 
         // Lấy userId từ FirebaseAuth
@@ -69,11 +95,67 @@ public class ReviewFragment extends Fragment {
             btnSubmitReview.setEnabled(false);
         }
 
+
+        // Xử lý khi nhấn nút chọn ảnh
+        btnChooseImage.setOnClickListener(v -> openImagePicker());
+
         // Xử lý khi nhấn nút gửi đánh giá
         btnSubmitReview.setOnClickListener(v -> submitReview());
 
         return view;
     }
+
+    // Hàm mở tùy chọn chọn ảnh từ thư viện hoặc chụp ảnh
+    private void openImagePicker() {
+        // Hộp thoại chọn Camera hoặc Thư viện
+        CharSequence[] options = {"Chụp ảnh", "Chọn ảnh từ thư viện", "Hủy"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Chọn phương thức thêm ảnh");
+        builder.setItems(options, (dialog, which) -> {
+            if (which == 0) {
+                // Chụp ảnh
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, REQUEST_CAMERA);
+            } else if (which == 1) {
+                // Chọn ảnh từ thư viện
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, REQUEST_GALLERY);
+            } else {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_GALLERY && data != null && data.getData() != null) {
+                // Ảnh từ thư viện
+                Uri selectedImageUri = data.getData();
+                imgReview.setImageURI(selectedImageUri);
+            } else if (requestCode == REQUEST_CAMERA && data != null) {
+                // Chụp ảnh từ Camera, lấy ảnh dạng Bitmap
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                if (photo != null) {
+                    imgReview.setImageBitmap(photo);
+                } else {
+                    Toast.makeText(getContext(), "Không lấy được ảnh từ camera!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+
+
+
+
 
     private void submitReview() {
         String comment = edtComment.getText().toString().trim();
