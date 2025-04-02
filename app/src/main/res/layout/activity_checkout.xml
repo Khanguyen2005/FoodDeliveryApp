@@ -147,9 +147,9 @@
                        android:id="@+id/rbCard"
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
-                       android:text="Momo"
+                       android:text=""
                        android:textSize="20sp"
-                       android:drawableLeft="@drawable/momo"
+                       android:drawableLeft="@drawable/vnpay_100"
                        android:drawablePadding="8dp"
                        android:background="@color/white"
                        android:buttonTint="@color/black"/>

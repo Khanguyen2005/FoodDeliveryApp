@@ -49,6 +49,9 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0") // Cập nhật phiên bản mới nhất
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
 }
 
 apply(plugin = "com.google.gms.google-services")

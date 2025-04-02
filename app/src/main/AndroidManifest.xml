@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- QUYỀN TRUY CẬP INTERNET -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- QUYỀN TRUY CẬP MEDIA (API 33+) -->
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
-
-    <!-- QUYỀN ĐỌC & GHI NGOẠI VI (CHỈ CẦN CHO API < 33) -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28"/>
-
-    <!-- QUYỀN CAMERA -->
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <!-- HỖ TRỢ CAMERA KHÔNG BẮT BUỘC -->
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- QUYỀN TRUY CẬP MEDIA (API 33+) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" /> <!-- QUYỀN ĐỌC & GHI NGOẠI VI (CHỈ CẦN CHO API < 33) -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" /> <!-- QUYỀN CAMERA -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- HỖ TRỢ CAMERA KHÔNG BẮT BUỘC -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -31,22 +26,55 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LTMobile"
         tools:targetApi="35">
+        <activity
+            android:name=".ResultCheckoutActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Scheme dùng để mở lại ứng dụng sau khi thanh toán -->
+                <data
+                    android:host="returnfromvnpay"
+                    android:scheme="digitalhibpayment" />
+            </intent-filter>
+        </activity>
         <!-- KHAI BÁO CÁC ACTIVITY -->
-        <activity android:name=".ForgotPasswordActivity" android:exported="false" />
-        <activity android:name=".ChangePasswordActivity" android:exported="false" />
-        <activity android:name=".EditProfileActivity" android:exported="false" />
-        <activity android:name=".CheckoutActivity" android:exported="false" />
-        <activity android:name=".services.OrderSuccessActivity" android:exported="false" />
-        <activity android:name=".CartActivity" android:exported="false" />
-        <activity android:name=".CategoryActivity" android:exported="false" />
-        <activity android:name=".RestaurantActivity" android:exported="false" />
-        <activity android:name=".MainActivity" android:exported="false" />
-
-        <!-- ACTIVITY ĐĂNG NHẬP (CHO PHÉP EXPORT ĐỂ KHỞI ĐỘNG ỨNG DỤNG) -->
-        <activity android:name=".LoginSignUpActivity" android:exported="true">
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CheckoutActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".services.OrderSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" /> <!-- ACTIVITY ĐĂNG NHẬP (CHO PHÉP EXPORT ĐỂ KHỞI ĐỘNG ỨNG DỤNG) -->
+        <activity
+            android:name=".LoginSignUpActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
