@@ -14,6 +14,7 @@
         android:paddingTop="20dp"
         android:orientation="vertical">
         <FrameLayout
+            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <Button
@@ -33,6 +34,7 @@
                 android:textStyle="bold"
                 android:layout_gravity="center"
                 android:textColor="@color/color_main"
+                android:paddingStart="16dp"
                 android:text = "Chỉnh sửa thông tin cá nhân"/>
         </FrameLayout>
         <LinearLayout
